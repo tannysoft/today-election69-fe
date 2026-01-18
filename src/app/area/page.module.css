@@ -1,0 +1,16 @@
+.container {
+    width: 1920px;
+    height: 1080px;
+    overflow: hidden;
+    background-color: #00b140;
+    /* Chroma Key Green default, can changed to dark studio grey */
+    position: relative;
+    /* Center it in the viewport if viewing on a different screen */
+    margin: 0 auto;
+    border: 1px solid #333;
+}
+
+/* Optional: nice studio background if not using chroma key */
+.studioBackground {
+    background: radial-gradient(circle at center, #1f2937 0%, #111827 100%);
+}

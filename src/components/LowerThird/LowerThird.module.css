@@ -1,0 +1,197 @@
+.lowerThirdContainer {
+    position: absolute;
+    bottom: 50px;
+    left: 0;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    font-family: var(--font-prompt), sans-serif;
+}
+
+.cardsRow {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    width: 100%;
+    padding: 0 40px;
+    margin-bottom: 0px;
+    /* Overlap with bar potentially */
+    z-index: 2;
+}
+
+.barContainer {
+    width: 100%;
+    background: #000000;
+    color: white;
+    text-align: center;
+    padding: 10px 0;
+    font-size: 1.5rem;
+    font-weight: 700;
+    z-index: 1;
+    margin-top: -30px;
+    /* Pull up to sit behind/under cards */
+    padding-top: 40px;
+    /* Compensate for negative margin */
+    padding-bottom: 20px;
+}
+
+/* Score Card */
+.card {
+    /* display: flex; REMOVED flex to allow full width children */
+    width: 550px;
+    height: 140px;
+    border-radius: 70px;
+    position: relative;
+    background: transparent;
+    /* Changed from white to transparent as content has BG */
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+    overflow: visible;
+}
+
+.rankCircle {
+    position: absolute;
+    top: -5px;
+    right: -5px;
+    width: 60px;
+    height: 60px;
+    background: white;
+    border-radius: 50%;
+    color: black;
+    font-weight: 800;
+    font-size: 2.7rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 10;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+.portraitCircle {
+    width: 130px;
+    height: 130px;
+    min-width: 130px;
+    border-radius: 50%;
+    background: white;
+    border: 4px solid white;
+    position: absolute;
+    /* Absolute positioning */
+    top: 5px;
+    /* Center vertically within 140px height */
+    left: 5px;
+    z-index: 20;
+    /* Higher than content */
+    overflow: hidden;
+}
+
+.portraitCircle img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.infoArea {
+    flex: 1;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding-left: 20px;
+    padding-right: 30px;
+    border-top-right-radius: 70px;
+    border-bottom-right-radius: 70px;
+    color: black;
+    /* Text color on background */
+}
+
+/* Specific background colors classes */
+.bgOrange {
+    background: linear-gradient(90deg, #F97316 0%, #EA580C 100%);
+}
+
+.bgRed {
+    background: linear-gradient(90deg, #EF4444 0%, #DC2626 100%);
+}
+
+.bgBlue {
+    background: linear-gradient(90deg, #3B82F6 0%, #2563EB 100%);
+}
+
+.bgGreen {
+    background: linear-gradient(90deg, #22C55E 0%, #16A34A 100%);
+}
+
+.name {
+    font-size: 1.2rem;
+    font-weight: 700;
+    margin-bottom: 2px;
+}
+
+.party {
+    font-size: 1rem;
+    font-weight: 400;
+    opacity: 0.9;
+    margin-bottom: 5px;
+}
+
+.scoreContainer {
+    display: flex;
+    align-items: baseline;
+    justify-content: flex-end;
+    margin-top: 5px;
+}
+
+.score {
+    font-size: 2.5rem;
+    font-weight: 800;
+    line-height: 1;
+    margin-right: 5px;
+}
+
+.scoreLabel {
+    font-size: 1rem;
+    font-weight: 500;
+}
+
+/* Adjust layout to fill the colored part properly */
+.cardContent {
+    width: 100%;
+    /* User Request: 100% width */
+    height: 100%;
+    position: relative;
+    /* Margin removed, using padding to offset text */
+    padding-left: 140px;
+    /* Space for portrait (130px) + gap */
+
+    border-radius: 70px;
+    /* Fully rounded to match card */
+    color: black;
+    z-index: 10;
+}
+
+.textGroup {
+    position: absolute;
+    top: 15px;
+    left: 0;
+    width: 100%;
+    padding-left: 150px;
+    /* Clear portrait overlap */
+    padding-right: 20px;
+}
+
+.scoreGroup {
+    position: absolute;
+    bottom: 10px;
+    right: 0;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    padding-right: 35px;
+    /* Clear rounded corner */
+}
+
+/* Rank 1 special styling? */
+.rank1 .infoArea {
+    /* box-shadow: inset 0 0 20px rgba(255,255,255,0.3); */
+}

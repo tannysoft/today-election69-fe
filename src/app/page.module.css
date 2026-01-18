@@ -1,0 +1,42 @@
+.main {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    padding: 6rem;
+}
+
+.center {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+}
+
+/* Add a nice glow effect behind the text */
+.center::before {
+    content: '';
+    position: absolute;
+    width: 300px;
+    height: 300px;
+    background: var(--primary-glow);
+    filter: blur(100px);
+    border-radius: 50%;
+    z-index: -1;
+    opacity: 0.5;
+}
+
+.center::after {
+    content: '';
+    position: absolute;
+    width: 200px;
+    height: 200px;
+    background: var(--secondary-glow);
+    filter: blur(90px);
+    border-radius: 50%;
+    z-index: -1;
+    opacity: 0.5;
+    transform: translate(50%, 50%);
+}
