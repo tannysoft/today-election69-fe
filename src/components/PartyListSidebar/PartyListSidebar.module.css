@@ -1,0 +1,164 @@
+.sidebarContainer {
+    width: 500px;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    /* Center vertical */
+    gap: 30px;
+    /* Space between cards */
+    padding: 2rem 1rem;
+    font-family: var(--font-prompt), sans-serif;
+}
+
+.partyRow {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    height: 160px;
+    /* Taller card */
+    position: relative;
+    gap: 1rem;
+}
+
+.rank {
+    font-size: 3rem;
+    font-weight: bold;
+    color: #fff;
+    /* Dark number outside */
+    width: 40px;
+    text-align: center;
+    font-family: var(--font-prompt), sans-serif;
+    position: absolute;
+    left: -50px;
+    /* Move rank outside to the left */
+}
+
+.rowContent {
+    flex: 1;
+    height: 100%;
+    border-radius: 40px;
+    /* Very round corners */
+    display: flex;
+    align-items: center;
+    padding: 0 2rem;
+    position: relative;
+    /* overflow: visible; */
+    /* Allow leader to pop out? If yes, need to handle z-index carefully */
+    overflow: hidden;
+    /* Image shows leader clipped inside card */
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+}
+
+/* Colors matching LowerThird */
+.bgOrange {
+    background: #E3874F;
+}
+
+/* Approximation from image */
+.bgRed {
+    background: #C44C4C;
+}
+
+.bgBlue {
+    background: #3C4D75;
+}
+
+.bgGreen {
+    background: #6B9C68;
+}
+
+
+.logoContainer {
+    position: absolute;
+    bottom: 15px;
+    left: 15px;
+    width: 60px;
+    height: 60px;
+    background: white;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 5px;
+    z-index: 10;
+    overflow: hidden;
+}
+
+.partyLogo {
+    width: 100%;
+    height: auto;
+    object-fit: contain;
+}
+
+.leaderImageContainer {
+    position: absolute;
+    top: 0;
+    left: 80px;
+    /* Offset from logo */
+    height: 100%;
+    width: 180px;
+    z-index: 5;
+    display: flex;
+    align-items: flex-end;
+}
+
+.leaderImage {
+    height: 110%;
+    /* Slightly bigger */
+    width: auto;
+    object-position: top center;
+    margin-bottom: -10px;
+    /* Align bottom */
+}
+
+.placeholderImage {
+    width: 100%;
+    height: 100%;
+    /* background: rgba(0, 0, 0, 0.2); */
+}
+
+.textGroup {
+    margin-left: auto;
+    /* Push to right */
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    /* Right align text */
+    justify-content: center;
+    z-index: 10;
+    color: white;
+    padding-top: 10px;
+}
+
+.partyName {
+    font-size: 1.5rem;
+    font-weight: bold;
+    margin-bottom: -5px;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.scoreValue {
+    font-size: 3rem;
+    /* Huge number */
+    font-weight: 900;
+    line-height: 1;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+@keyframes fadeUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.fadeUpAnimation {
+    animation: fadeUp 0.6s ease-out forwards;
+    opacity: 0;
+}

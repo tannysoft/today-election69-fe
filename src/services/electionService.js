@@ -61,3 +61,40 @@ export async function getElectionData() {
         return [];
     }
 }
+
+export async function getPartyListData() {
+    try {
+        await pb.admins.authWithPassword(process.env.POCKETBASE_ADMIN_EMAIL, process.env.POCKETBASE_ADMIN_PASSWORD);
+
+        // 1. Fetch from 'partylistResults'
+        const results = await pb.collection('partylistResults').getFullList({
+            sort: '-totalSeats',
+            expand: 'party',
+        });
+
+        console.log("DEBUG: Partylist results count:", results.length);
+        if (results.length > 0) {
+            console.log("DEBUG: First record expand:", JSON.stringify(results[0].expand, null, 2));
+            console.log("DEBUG: First record party field:", results[0].party);
+        }
+
+        // 2. Map to expected format
+        const formattedResults = results.map((record, index) => {
+            const partyObj = record.expand?.party;
+            return {
+                rank: index + 1,
+                name: partyObj?.name || "Unknown",
+                count: record.totalSeats || 0, // Using totalSeats as the score
+                color: partyObj?.color || 'orange',
+                logoUrl: partyObj?.logoUrl || null,
+                leader: partyObj?.leader ? pb.files.getUrl(partyObj, partyObj.leader) : null
+            };
+        });
+
+        return formattedResults;
+
+    } catch (error) {
+        console.error("Error fetching party list data:", error);
+        return [];
+    }
+}

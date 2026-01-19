@@ -1,0 +1,31 @@
+.container {
+    width: 1920px;
+    height: 1080px;
+    overflow: hidden;
+    position: relative;
+    background: radial-gradient(circle at center, #1f2937 0%, #111827 100%);
+    /* Studio BG fallback */
+    display: flex;
+}
+
+.leftTarget {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: rgba(255, 255, 255, 0.2);
+    font-size: 2rem;
+    border-right: 1px dashed rgba(255, 255, 255, 0.1);
+}
+
+.sidebarArea {
+    width: 500px;
+    height: 100%;
+    /* background: rgba(0,0,0,0.5); */
+    /* Optional tint */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding-right: 50px;
+    /* Spacing from right edge */
+}
