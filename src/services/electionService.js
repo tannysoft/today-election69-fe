@@ -27,6 +27,7 @@ export async function getElectionData() {
                 .filter(c => c.area === area.id)
                 .slice(0, 3) // Top 3 only
                 .map((c, index) => ({
+                    id: c.id,
                     rank: index + 1,
                     name: c.name,
                     party: c.expand?.party?.name || c.party || "",
