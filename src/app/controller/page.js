@@ -14,11 +14,13 @@ export default function ControllerPage() {
     const [selectedProvince, setSelectedProvince] = useState("");
     const [selectedDistrict, setSelectedDistrict] = useState("");
     const [hideZero, setHideZero] = useState(false);
+    const [removeBg, setRemoveBg] = useState(false);
 
     // Applied State (What is actually active in DB/Area Page)
     const [appliedProvince, setAppliedProvince] = useState("");
     const [appliedDistrict, setAppliedDistrict] = useState("");
     const [appliedHideZero, setAppliedHideZero] = useState(false);
+    const [appliedRemoveBg, setAppliedRemoveBg] = useState(false);
 
     // PocketBase Settings ID
     const [settingsId, setSettingsId] = useState(null);
@@ -46,14 +48,17 @@ export default function ControllerPage() {
                         const prov = settings.filter_province || "";
                         const dist = settings.filter_district || "";
                         const hide = settings.hide_zero_score || false;
+                        const rmBg = settings.remove_background || false;
 
                         setSelectedProvince(prov);
                         setSelectedDistrict(dist);
                         setHideZero(hide);
+                        setRemoveBg(rmBg);
 
                         setAppliedProvince(prov);
                         setAppliedDistrict(dist);
                         setAppliedHideZero(hide);
+                        setAppliedRemoveBg(rmBg);
                     } else {
                         setStatusMessage("Failed to load settings from server.");
                     }
@@ -73,7 +78,7 @@ export default function ControllerPage() {
     }, []);
 
     // Helper to update
-    const handleUpdate = async (province, district, hide) => {
+    const handleUpdate = async (province, district, hide, rmBg) => {
         if (!settingsId) return;
 
         setStatusMessage("Updating...");
@@ -81,7 +86,8 @@ export default function ControllerPage() {
             const success = await updateSettings(settingsId, {
                 filter_province: province,
                 filter_district: district,
-                hide_zero_score: hide
+                hide_zero_score: hide,
+                remove_background: rmBg
             });
 
             if (success) {
@@ -89,6 +95,7 @@ export default function ControllerPage() {
                 setAppliedProvince(province);
                 setAppliedDistrict(district);
                 setAppliedHideZero(hide);
+                setAppliedRemoveBg(rmBg);
                 setStatusMessage("Update Successful");
             } else {
                 setStatusMessage("Update Failed (Server Error)");
@@ -114,8 +121,12 @@ export default function ControllerPage() {
         setHideZero(e.target.checked);
     };
 
+    const handleRemoveBgChange = (e) => {
+        setRemoveBg(e.target.checked);
+    };
+
     const handleApply = () => {
-        handleUpdate(selectedProvince, selectedDistrict, hideZero);
+        handleUpdate(selectedProvince, selectedDistrict, hideZero, removeBg);
     };
 
     const handleReset = () => {
@@ -123,7 +134,8 @@ export default function ControllerPage() {
         setSelectedProvince("");
         setSelectedDistrict("");
         setHideZero(false);
-        handleUpdate("", "", false);
+        setRemoveBg(false);
+        handleUpdate("", "", false, false);
     };
 
     // Filter districts based on selected province
@@ -181,6 +193,20 @@ export default function ControllerPage() {
                 </div>
             </div>
 
+            <div className={styles.controlGroup}>
+                <div className={styles.toggleContainer}>
+                    <label className={styles.switch}>
+                        <input
+                            type="checkbox"
+                            checked={removeBg}
+                            onChange={handleRemoveBgChange}
+                        />
+                        <span className={`${styles.slider} ${styles.round}`}></span>
+                    </label>
+                    <span className={styles.toggleLabel}>remove_background</span>
+                </div>
+            </div>
+
             <div className={styles.buttonGroup}>
                 <button
                     className={styles.applyButton}
@@ -200,7 +226,7 @@ export default function ControllerPage() {
             <div className={styles.status}>
                 <strong>Status:</strong> {statusMessage}
                 <div className={styles.activeFilters}>
-                    Current Applied: {appliedProvince || "All"} {appliedDistrict ? `> เขต ${appliedDistrict}` : ""} {appliedHideZero ? "(Hide 0 Score)" : ""}
+                    Current Applied: {appliedProvince || "All"} {appliedDistrict ? `> เขต ${appliedDistrict}` : ""} {appliedHideZero ? "(Hide 0 Score)" : ""} {appliedRemoveBg ? "(Remove BG)" : ""}
                 </div>
             </div>
         </div>

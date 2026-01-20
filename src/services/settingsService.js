@@ -26,20 +26,23 @@ export async function getSettings() {
                 id: list.items[0].id,
                 filter_province: list.items[0].filter_province || "",
                 filter_district: list.items[0].filter_district || "",
-                hide_zero_score: list.items[0].hide_zero_score || false
+                hide_zero_score: list.items[0].hide_zero_score || false,
+                remove_background: list.items[0].remove_background || false
             };
         } else {
             // Collection exists but empty -> create default
             const newRecord = await pb.collection('settings').create({
                 filter_province: "",
                 filter_district: "",
-                hide_zero_score: false
+                hide_zero_score: false,
+                remove_background: false
             });
             return {
                 id: newRecord.id,
                 filter_province: "",
                 filter_district: "",
-                hide_zero_score: false
+                hide_zero_score: false,
+                remove_background: false
             };
         }
     } catch (error) {
@@ -108,14 +111,22 @@ export async function ensureCollectionsPublic() {
             // 1. Specific Schema Checks
             if (colName === 'settings') {
                 const schema = collection.schema || [];
-                const hasHideZero = schema.some(f => f.name === 'hide_zero_score');
-                if (!hasHideZero) {
-                    console.log("Adding hide_zero_score to settings schema...");
-                    const newSchema = [
-                        ...schema,
-                        { name: 'hide_zero_score', type: 'bool' }
-                    ];
-                    updateData.schema = newSchema;
+                let schemaChanged = false;
+
+                // Check hide_zero_score
+                if (!schema.some(f => f.name === 'hide_zero_score')) {
+                    schema.push({ name: 'hide_zero_score', type: 'bool' });
+                    schemaChanged = true;
+                }
+
+                // Check remove_background
+                if (!schema.some(f => f.name === 'remove_background')) {
+                    schema.push({ name: 'remove_background', type: 'bool' });
+                    schemaChanged = true;
+                }
+
+                if (schemaChanged) {
+                    updateData.schema = schema;
                     needsUpdate = true;
                 }
             }
