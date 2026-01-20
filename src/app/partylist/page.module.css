@@ -3,7 +3,7 @@
     height: 1080px;
     overflow: hidden;
     position: relative;
-    background: radial-gradient(circle at center, #1f2937 0%, #111827 100%);
+    background: var(--bg-studio, radial-gradient(circle at center, #1f2937 0%, #111827 100%));
     /* Studio BG fallback */
     display: flex;
 }
