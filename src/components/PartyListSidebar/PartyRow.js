@@ -17,7 +17,7 @@ export default function PartyRow({ rank, name, count, color, logoUrl, leader }) 
 
     const colorStyle = isHex ? { background: color, color: textColor } : { color: textColor };
 
-    const shadowStyle = textColor === 'white' ? { textShadow: 'none' } : {};
+    const shadowStyle = textColor === 'black' ? { textShadow: 'none' } : {};
 
     // Map known colors to styles if not hex
     const colorClass = !isHex ? ({

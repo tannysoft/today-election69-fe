@@ -107,11 +107,12 @@ export async function ensureCollectionsPublic() {
 
             // 1. Specific Schema Checks
             if (colName === 'settings') {
-                const hasHideZero = collection.schema.some(f => f.name === 'hide_zero_score');
+                const schema = collection.schema || [];
+                const hasHideZero = schema.some(f => f.name === 'hide_zero_score');
                 if (!hasHideZero) {
                     console.log("Adding hide_zero_score to settings schema...");
                     const newSchema = [
-                        ...collection.schema,
+                        ...schema,
                         { name: 'hide_zero_score', type: 'bool' }
                     ];
                     updateData.schema = newSchema;

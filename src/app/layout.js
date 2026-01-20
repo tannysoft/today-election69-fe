@@ -1,11 +1,80 @@
-import { Inter, Prompt } from "next/font/google";
+import localFont from "next/font/local";
 import "./globals.css";
 
-const inter = Inter({ subsets: ["latin"] });
-const prompt = Prompt({
-  weight: ['300', '400', '500', '700'],
-  subsets: ["thai", "latin"],
-  variable: '--font-prompt',
+const dbHeavent = localFont({
+  src: [
+    {
+      path: '../../public/fonts/DB Heavent Thin v3.2.ttf',
+      weight: '100',
+      style: 'normal',
+    },
+    {
+      path: '../../public/fonts/DB Heavent Thin It v3.2.ttf',
+      weight: '100',
+      style: 'italic',
+    },
+    {
+      path: '../../public/fonts/DB Heavent UlLi v3.2.ttf',
+      weight: '200',
+      style: 'normal',
+    },
+    {
+      path: '../../public/fonts/DB Heavent UlLi It v3.2.ttf',
+      weight: '200',
+      style: 'italic',
+    },
+    {
+      path: '../../public/fonts/DB Heavent Li v3.2.ttf',
+      weight: '300',
+      style: 'normal',
+    },
+    {
+      path: '../../public/fonts/DB Heavent Li It v3.2.ttf',
+      weight: '300',
+      style: 'italic',
+    },
+    {
+      path: '../../public/fonts/DB Heavent v3.2.ttf',
+      weight: '400',
+      style: 'normal',
+    },
+    {
+      path: '../../public/fonts/DB Heavent It v3.2.ttf',
+      weight: '400',
+      style: 'italic',
+    },
+    {
+      path: '../../public/fonts/DB Heavent Med v3.2.ttf',
+      weight: '500',
+      style: 'normal',
+    },
+    {
+      path: '../../public/fonts/DB Heavent Med It v3.2.ttf',
+      weight: '500',
+      style: 'italic',
+    },
+    {
+      path: '../../public/fonts/DB Heavent Bd v3.2.ttf',
+      weight: '700',
+      style: 'normal',
+    },
+    {
+      path: '../../public/fonts/DB Heavent Bd It v3.2.ttf',
+      weight: '700',
+      style: 'italic',
+    },
+    {
+      path: '../../public/fonts/DB Heavent Blk v3.2.ttf',
+      weight: '900',
+      style: 'normal',
+    },
+    {
+      path: '../../public/fonts/DB Heavent Blk It v3.2.ttf',
+      weight: '900',
+      style: 'italic',
+    },
+  ],
+  variable: '--font-prompt', // Hijack existing variable
 });
 
 export const metadata = {
@@ -16,7 +85,7 @@ export const metadata = {
 export default function RootLayout({ children }) {
   return (
     <html lang="en">
-      <body className={`${inter.className} ${prompt.variable}`}>{children}</body>
+      <body className={dbHeavent.variable}>{children}</body>
     </html>
   );
 }

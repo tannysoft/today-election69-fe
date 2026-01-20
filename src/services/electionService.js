@@ -31,6 +31,7 @@ export async function getElectionData() {
                     rank: index + 1,
                     name: c.name,
                     party: c.expand?.party?.name || c.party || "",
+                    partyLogoUrl: c.expand?.party?.logoUrl || null,
                     score: c.totalVotes,
                     color: c.expand?.party?.color || c.color || 'orange', // Party color > Candidate color > Default
                     image: c.photoUrl || (c.image ? pb.files.getUrl(c, c.image) : null)

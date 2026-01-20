@@ -1,0 +1,27 @@
+@font-face {
+  font-family: "db_heavent";
+  src: url("DB Heavent Thin v3.2.ttf") format("truetype");
+  font-weight: 100;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "db_heavent";
+  src: url("DB Heavent Li v3.2.ttf") format("truetype");
+  font-weight: 400;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "db_heavent";
+  src: url("DB Heavent Med v3.2.ttf") format("truetype");
+  font-weight: 500;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "db_heavent";
+  src: url("DB Heavent Bd v3.2.ttf") format("truetype");
+  font-weight: 800;
+  font-style: normal;
+}

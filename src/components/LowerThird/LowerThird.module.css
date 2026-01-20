@@ -26,8 +26,9 @@
     color: white;
     text-align: center;
     padding: 10px 0;
-    font-size: 1.5rem;
+    font-size: 2.3rem;
     font-weight: 700;
+    line-height: 2.2rem;
     z-index: 1;
     margin-top: -30px;
     /* Pull up to sit behind/under cards */
@@ -59,7 +60,7 @@
     border-radius: 50%;
     color: black;
     font-weight: 800;
-    font-size: 2.7rem;
+    font-size: 4rem;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -102,10 +103,30 @@
     border-bottom-right-radius: 70px;
     color: black;
     /* Text color on background */
+    position: relative;
+    /* Create context for watermark */
+    overflow: hidden;
+    /* Clip watermark */
+}
+
+.watermarkLogo {
+    position: absolute;
+    top: 50%;
+    right: 0;
+    height: 144%;
+    width: auto;
+    opacity: 0.2;
+    transform: translateY(-50%);
+    pointer-events: none;
+    filter: grayscale(100%);
+    z-index: 1;
+    /* Behind text (text should be z-index 10) */
+    mix-blend-mode: multiply;
+    /* Optional: better blending */
 }
 
 /* Specific background colors classes */
-.bgOrange {
+/* .bgOrange {
     background: linear-gradient(90deg, #F97316 0%, #EA580C 100%);
 }
 
@@ -119,19 +140,19 @@
 
 .bgGreen {
     background: linear-gradient(90deg, #22C55E 0%, #16A34A 100%);
-}
+} */
 
 .name {
-    font-size: 1.2rem;
+    font-size: 2.2rem;
     font-weight: 700;
-    margin-bottom: 2px;
+    line-height: 2.2rem;
+    margin-bottom: 0;
 }
 
 .party {
-    font-size: 1rem;
+    font-size: 1.8rem;
     font-weight: 400;
-    opacity: 0.9;
-    margin-bottom: 5px;
+    line-height: 2rem;
 }
 
 .scoreContainer {
@@ -142,15 +163,16 @@
 }
 
 .score {
-    font-size: 2.5rem;
+    font-size: 5rem;
     font-weight: 800;
-    line-height: 1;
-    margin-right: 5px;
+    line-height: 2.5rem;
 }
 
 .scoreLabel {
-    font-size: 1rem;
+    padding-right: 2px;
+    font-size: 1.2rem;
     font-weight: 500;
+    line-height: 1.5rem;
 }
 
 /* Adjust layout to fill the colored part properly */
@@ -167,6 +189,7 @@
     /* Fully rounded to match card */
     color: black;
     z-index: 10;
+    overflow: hidden;
 }
 
 .textGroup {
@@ -177,6 +200,7 @@
     padding-left: 150px;
     /* Clear portrait overlap */
     padding-right: 20px;
+    z-index: 2;
 }
 
 .scoreGroup {
@@ -189,6 +213,7 @@
     align-items: flex-end;
     padding-right: 35px;
     /* Clear rounded corner */
+    z-index: 2;
 }
 
 /* Rank 1 special styling? */

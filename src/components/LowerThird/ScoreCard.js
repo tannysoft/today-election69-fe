@@ -2,7 +2,7 @@
 import CountUp from 'react-countup';
 import styles from './LowerThird.module.css';
 
-export default function ScoreCard({ rank, name, party, score, color, image }) {
+export default function ScoreCard({ rank, name, party, partyLogoUrl, score, color, image }) {
     // Check if color is a hex code (starts with #)
     const isHex = color?.startsWith('#');
     const colorClass = !isHex ? ({
@@ -55,6 +55,11 @@ export default function ScoreCard({ rank, name, party, score, color, image }) {
                     color: textColor
                 }}
             >
+                {/* Watermark Logo */}
+                {partyLogoUrl && (
+                    <img src={partyLogoUrl} alt="" className={styles.watermarkLogo} />
+                )}
+
                 <div className={styles.textGroup}>
                     <div className={`${styles.name} ${styles.wipeFadeAnimation}`} style={{ animationDelay: `${(rank - 1) * 0.15 + 0.3}s` }}>{name}</div>
                     <div className={`${styles.party} ${styles.wipeFadeAnimation}`} style={{ animationDelay: `${(rank - 1) * 0.15 + 0.4}s` }}>{party}</div>
