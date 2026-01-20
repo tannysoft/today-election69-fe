@@ -2,7 +2,7 @@
 
 import pb from '@/lib/pocketbase';
 
-export async function getElectionData() {
+export async function getElectionData(limit = 3) {
     try {
         // Authenticate as Admin
         await pb.admins.authWithPassword(process.env.POCKETBASE_ADMIN_EMAIL, process.env.POCKETBASE_ADMIN_PASSWORD);
@@ -25,7 +25,7 @@ export async function getElectionData() {
             // Filter candidates for this area
             const areaCandidates = candidates
                 .filter(c => c.area === area.id)
-                .slice(0, 3) // Top 3 only
+                .slice(0, limit) // Top N only
                 .map((c, index) => ({
                     id: c.id,
                     rank: index + 1,

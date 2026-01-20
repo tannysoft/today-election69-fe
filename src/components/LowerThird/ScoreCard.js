@@ -2,7 +2,7 @@
 import CountUp from 'react-countup';
 import styles from './LowerThird.module.css';
 
-export default function ScoreCard({ rank, name, party, partyLogoUrl, score, color, image }) {
+export default function ScoreCard({ rank, name, party, partyLogoUrl, score, color, image, rankPosition = 'top' }) {
     // Check if color is a hex code (starts with #)
     const isHex = color?.startsWith('#');
     const colorClass = !isHex ? ({
@@ -26,7 +26,7 @@ export default function ScoreCard({ rank, name, party, partyLogoUrl, score, colo
 
     return (
         <div
-            className={`${styles.card} ${styles.fadeUpAnimation} ${rank === 1 ? styles.rank1 : ''}`}
+            className={`${styles.card} ${styles.fadeUpAnimation} ${rank === 1 ? styles.rank1 : ''} ${rankPosition === 'bottom' ? styles.rankBottom : ''}`}
             style={{ animationDelay: `${(rank - 1) * 0.15}s` }}
         >
             {/* Portrait */}
@@ -74,7 +74,7 @@ export default function ScoreCard({ rank, name, party, partyLogoUrl, score, colo
 
             {/* Rank Badge */}
             <div className={styles.rankCircle}>
-                {rank}
+                {rankPosition === 'bottom' ? `อันดับที่ ${rank}` : rank}
             </div>
         </div>
     );

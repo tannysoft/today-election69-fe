@@ -1,0 +1,79 @@
+.container {
+    width: 1920px;
+    height: 1080px;
+    background: transparent;
+    /* Or studio background */
+    position: relative;
+    overflow: hidden;
+    font-family: var(--font-prompt);
+    color: white;
+}
+
+/* Header: Province & Zone */
+.headerArea {
+    position: absolute;
+    top: 200px;
+    left: 100px;
+    width: 600px;
+    text-align: center;
+}
+
+.province {
+    font-size: 6rem;
+    font-weight: 900;
+    line-height: 4rem;
+    margin-bottom: 10px;
+}
+
+.zone {
+    font-size: 4rem;
+    font-weight: 700;
+    line-height: 3rem;
+}
+
+/* Rank 1 Area */
+.rank1Area {
+    position: absolute;
+    top: 150px;
+    right: 150px;
+    /* Scale wrapper */
+    transform: scale(1.5);
+    transform-origin: top right;
+}
+
+/* Grid Area for Ranks 2-7 */
+.gridArea {
+    position: absolute;
+    bottom: 100px;
+    left: 50%;
+    /* Center horizontally? Or align with design? */
+    transform: translateX(-50%);
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-template-rows: repeat(2, 1fr);
+    gap: 100px 60px;
+    /* Row gap, Col gap */
+    width: max-content;
+}
+
+.gridItem {
+    /* Optional scaling for grid items if needed */
+    /* transform: scale(0.9); */
+}
+
+@keyframes fadeUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.animFadeUp {
+    animation: fadeUp 0.6s ease-out forwards;
+    opacity: 0;
+}
