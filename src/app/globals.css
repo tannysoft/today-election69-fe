@@ -78,3 +78,8 @@ a {
 body.remove-bg .camera-feed-watermark {
   opacity: 0 !important;
 }
+
+html.remove-bg,
+body.remove-bg {
+  background: transparent !important;
+}

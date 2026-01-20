@@ -12,10 +12,12 @@ export default function GlobalSettingsListener() {
                 document.body.style.background = 'transparent';
                 document.documentElement.style.setProperty('--bg-studio', 'transparent');
                 document.body.classList.add('remove-bg');
+                document.documentElement.classList.add('remove-bg');
             } else {
                 document.body.style.background = ''; // Revert to CSS default
                 document.documentElement.style.removeProperty('--bg-studio');
                 document.body.classList.remove('remove-bg');
+                document.documentElement.classList.remove('remove-bg');
             }
         };
 
