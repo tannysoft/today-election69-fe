@@ -15,11 +15,10 @@
     align-items: center;
     color: rgba(255, 255, 255, 0.2);
     font-size: 2rem;
-    border-right: 1px dashed rgba(255, 255, 255, 0.1);
 }
 
 .sidebarArea {
-    width: 500px;
+    width: 700px;
     height: 100%;
     /* background: rgba(0,0,0,0.5); */
     /* Optional tint */

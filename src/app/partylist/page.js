@@ -17,14 +17,14 @@ export default function PartyListPage() {
     useEffect(() => {
         fetchData();
 
-        // Subscribe to partylistResults updates
-        pb.collection('partylistResults').subscribe('*', function (e) {
-            console.log("partylistResults update:", e.action);
+        // Subscribe to parties updates
+        pb.collection('parties').subscribe('*', function (e) {
+            console.log("parties update:", e.action);
             fetchData();
         });
 
         return () => {
-            pb.collection('partylistResults').unsubscribe('*');
+            pb.collection('parties').unsubscribe('*');
         };
     }, []);
 

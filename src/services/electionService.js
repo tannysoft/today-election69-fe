@@ -67,28 +67,22 @@ export async function getPartyListData() {
     try {
         await pb.admins.authWithPassword(process.env.POCKETBASE_ADMIN_EMAIL, process.env.POCKETBASE_ADMIN_PASSWORD);
 
-        // 1. Fetch from 'partylistResults'
-        const results = await pb.collection('partylistResults').getFullList({
+        // 1. Fetch from 'parties' directly
+        const results = await pb.collection('parties').getFullList({
             sort: '-totalSeats',
-            expand: 'party',
         });
 
-        console.log("DEBUG: Partylist results count:", results.length);
-        if (results.length > 0) {
-            console.log("DEBUG: First record expand:", JSON.stringify(results[0].expand, null, 2));
-            console.log("DEBUG: First record party field:", results[0].party);
-        }
+        console.log("DEBUG: Parties count:", results.length);
 
         // 2. Map to expected format
         const formattedResults = results.map((record, index) => {
-            const partyObj = record.expand?.party;
             return {
                 rank: index + 1,
-                name: partyObj?.name || "Unknown",
-                count: record.totalSeats || 0, // Using totalSeats as the score
-                color: partyObj?.color || 'orange',
-                logoUrl: partyObj?.logoUrl || null,
-                leader: partyObj?.leader ? pb.files.getUrl(partyObj, partyObj.leader) : null
+                name: record.name || "Unknown",
+                count: record.totalSeats || 0,
+                color: record.color || 'orange',
+                logoUrl: record.logoUrl || null,
+                leader: record.leader ? pb.files.getUrl(record, record.leader) : null
             };
         });
 

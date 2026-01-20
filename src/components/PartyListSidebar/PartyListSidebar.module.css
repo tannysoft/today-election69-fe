@@ -1,5 +1,5 @@
 .sidebarContainer {
-    width: 500px;
+    width: 100%;
     height: 100%;
     display: flex;
     flex-direction: column;
@@ -132,17 +132,18 @@
 }
 
 .partyName {
-    font-size: 1.5rem;
+    font-size: 2rem;
     font-weight: bold;
+    line-height: 2rem;
     margin-bottom: -5px;
     text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
 }
 
 .scoreValue {
-    font-size: 3rem;
+    font-size: 7rem;
     /* Huge number */
     font-weight: 900;
-    line-height: 1;
+    line-height: 5rem;
     text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
 }
 
