@@ -30,7 +30,7 @@ export default function PartyListPage() {
 
     return (
         <div className={styles.container}>
-            <div className={styles.leftTarget}>
+            <div className={`${styles.leftTarget} camera-feed-watermark`}>
                 1920x1080 CAMERA FEED TARGET
             </div>
 

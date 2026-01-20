@@ -21,6 +21,17 @@
     border-radius: 8px;
 }
 
+.rowGroup {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 2rem;
+}
+
+.rowGroup>.controlGroup {
+    flex: 1;
+    margin-bottom: 0;
+}
+
 .label {
     display: block;
     margin-bottom: 0.5rem;

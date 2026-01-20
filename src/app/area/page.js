@@ -183,7 +183,7 @@ export default function AreaPage() {
 
     return (
         <div className={`${styles.container} ${styles.studioBackground}`}>
-            <div style={{
+            <div className="camera-feed-watermark" style={{
                 position: 'absolute',
                 top: '200px',
                 width: '100%',

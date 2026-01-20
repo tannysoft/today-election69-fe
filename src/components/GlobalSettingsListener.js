@@ -11,9 +11,11 @@ export default function GlobalSettingsListener() {
             if (settings?.remove_background) {
                 document.body.style.background = 'transparent';
                 document.documentElement.style.setProperty('--bg-studio', 'transparent');
+                document.body.classList.add('remove-bg');
             } else {
                 document.body.style.background = ''; // Revert to CSS default
                 document.documentElement.style.removeProperty('--bg-studio');
+                document.body.classList.remove('remove-bg');
             }
         };
 

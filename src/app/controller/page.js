@@ -150,60 +150,64 @@ export default function ControllerPage() {
         <div className={styles.container}>
             <h1 className={styles.title}>Display Controller</h1>
 
-            <div className={styles.controlGroup}>
-                <label className={styles.label}>Province (จังหวัด)</label>
-                <select
-                    className={styles.select}
-                    value={selectedProvince}
-                    onChange={handleProvinceChange}
-                >
-                    <option value="">-- Show All Provinces --</option>
-                    {provinces.map((prov, idx) => (
-                        <option key={idx} value={prov}>{prov}</option>
-                    ))}
-                </select>
-            </div>
+            <div className={styles.rowGroup}>
+                <div className={styles.controlGroup}>
+                    <label className={styles.label}>Province (จังหวัด)</label>
+                    <select
+                        className={styles.select}
+                        value={selectedProvince}
+                        onChange={handleProvinceChange}
+                    >
+                        <option value="">-- Show All Provinces --</option>
+                        {provinces.map((prov, idx) => (
+                            <option key={idx} value={prov}>{prov}</option>
+                        ))}
+                    </select>
+                </div>
 
-            <div className={styles.controlGroup}>
-                <label className={styles.label}>District (เขต)</label>
-                <select
-                    className={styles.select}
-                    value={selectedDistrict}
-                    onChange={handleDistrictChange}
-                    disabled={!selectedProvince}
-                >
-                    <option value="">-- Show All Districts --</option>
-                    {availableDistricts.map((dist, idx) => (
-                        <option key={idx} value={dist}>เขต {dist}</option>
-                    ))}
-                </select>
-            </div>
-
-            <div className={styles.controlGroup}>
-                <div className={styles.toggleContainer}>
-                    <label className={styles.switch}>
-                        <input
-                            type="checkbox"
-                            checked={hideZero}
-                            onChange={handleHideZeroChange}
-                        />
-                        <span className={`${styles.slider} ${styles.round}`}></span>
-                    </label>
-                    <span className={styles.toggleLabel}>hide_zero_score</span>
+                <div className={styles.controlGroup}>
+                    <label className={styles.label}>District (เขต)</label>
+                    <select
+                        className={styles.select}
+                        value={selectedDistrict}
+                        onChange={handleDistrictChange}
+                        disabled={!selectedProvince}
+                    >
+                        <option value="">-- Show All Districts --</option>
+                        {availableDistricts.map((dist, idx) => (
+                            <option key={idx} value={dist}>เขต {dist}</option>
+                        ))}
+                    </select>
                 </div>
             </div>
 
-            <div className={styles.controlGroup}>
-                <div className={styles.toggleContainer}>
-                    <label className={styles.switch}>
-                        <input
-                            type="checkbox"
-                            checked={removeBg}
-                            onChange={handleRemoveBgChange}
-                        />
-                        <span className={`${styles.slider} ${styles.round}`}></span>
-                    </label>
-                    <span className={styles.toggleLabel}>remove_background</span>
+            <div className={styles.rowGroup}>
+                <div className={styles.controlGroup}>
+                    <div className={styles.toggleContainer}>
+                        <label className={styles.switch}>
+                            <input
+                                type="checkbox"
+                                checked={hideZero}
+                                onChange={handleHideZeroChange}
+                            />
+                            <span className={`${styles.slider} ${styles.round}`}></span>
+                        </label>
+                        <span className={styles.toggleLabel}>hide_zero_score</span>
+                    </div>
+                </div>
+
+                <div className={styles.controlGroup}>
+                    <div className={styles.toggleContainer}>
+                        <label className={styles.switch}>
+                            <input
+                                type="checkbox"
+                                checked={removeBg}
+                                onChange={handleRemoveBgChange}
+                            />
+                            <span className={`${styles.slider} ${styles.round}`}></span>
+                        </label>
+                        <span className={styles.toggleLabel}>remove_background</span>
+                    </div>
                 </div>
             </div>
 
