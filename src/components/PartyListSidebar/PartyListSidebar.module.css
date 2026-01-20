@@ -127,7 +127,7 @@
     /* Right align text */
     justify-content: center;
     z-index: 10;
-    color: white;
+    /* color: white; REMOVED to allow inheritance */
     padding-top: 10px;
 }
 

@@ -3,7 +3,21 @@ import CountUp from 'react-countup';
 
 export default function PartyRow({ rank, name, count, color, logoUrl, leader }) {
     const isHex = color?.startsWith('#');
-    const colorStyle = isHex ? { background: color } : {};
+    // Helper to determine text color based on background brightness
+    const getTextColor = (hex) => {
+        if (!hex) return 'white'; // Default for gradients/missing
+        const r = parseInt(hex.slice(1, 3), 16);
+        const g = parseInt(hex.slice(3, 5), 16);
+        const b = parseInt(hex.slice(5, 7), 16);
+        const yiq = ((r * 299) + (g * 587) + (b * 114)) / 1000;
+        return (yiq >= 150) ? 'black' : 'white';
+    };
+
+    const textColor = isHex ? getTextColor(color) : 'white'; // Default white for preset gradients
+
+    const colorStyle = isHex ? { background: color, color: textColor } : { color: textColor };
+
+    const shadowStyle = textColor === 'white' ? { textShadow: 'none' } : {};
 
     // Map known colors to styles if not hex
     const colorClass = !isHex ? ({
@@ -39,8 +53,8 @@ export default function PartyRow({ rank, name, count, color, logoUrl, leader }) 
 
                 {/* 3. Text Group (Right - Name Top, Score Bottom) */}
                 <div className={styles.textGroup}>
-                    <div className={styles.partyName}>{name}</div>
-                    <div className={styles.scoreValue}>
+                    <div className={styles.partyName} style={shadowStyle}>{name}</div>
+                    <div className={styles.scoreValue} style={shadowStyle}>
                         <CountUp end={count} duration={1} separator="," />
                     </div>
                 </div>

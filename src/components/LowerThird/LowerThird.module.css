@@ -230,3 +230,17 @@
     opacity: 0;
     /* Ensures it starts invisible */
 }
+
+@keyframes slowZoom {
+    from {
+        transform: scale(1);
+    }
+
+    to {
+        transform: scale(1.5);
+    }
+}
+
+.zoomAnimation {
+    animation: slowZoom 15s ease-out forwards;
+}

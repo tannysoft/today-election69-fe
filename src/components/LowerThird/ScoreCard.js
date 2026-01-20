@@ -12,6 +12,18 @@ export default function ScoreCard({ rank, name, party, score, color, image }) {
         green: styles.bgGreen
     }[color] || styles.bgOrange) : '';
 
+    // Helper to determine text color based on background brightness
+    const getTextColor = (hex) => {
+        if (!hex) return 'white'; // Default for gradients/missing
+        const r = parseInt(hex.slice(1, 3), 16);
+        const g = parseInt(hex.slice(3, 5), 16);
+        const b = parseInt(hex.slice(5, 7), 16);
+        const yiq = ((r * 299) + (g * 587) + (b * 114)) / 1000;
+        return (yiq >= 150) ? 'black' : 'white';
+    };
+
+    const textColor = isHex ? getTextColor(color) : 'white'; // Default white for preset gradients
+
     return (
         <div
             className={`${styles.card} ${styles.fadeUpAnimation} ${rank === 1 ? styles.rank1 : ''}`}
@@ -23,11 +35,13 @@ export default function ScoreCard({ rank, name, party, score, color, image }) {
                     <img
                         src={image}
                         alt={name}
+                        className={styles.zoomAnimation}
                         style={{
                             width: '100%',
                             height: '100%',
                             objectFit: 'cover',
-                            objectPosition: 'top'
+                            objectPosition: 'top',
+                            animationDelay: `${(rank - 1) * 0.15 + 0.6}s`
                         }}
                     />
                 ) : (
@@ -38,7 +52,10 @@ export default function ScoreCard({ rank, name, party, score, color, image }) {
             {/* Content Area */}
             <div
                 className={`${styles.cardContent} ${colorClass}`}
-                style={isHex ? { background: color } : {}}
+                style={{
+                    ...(isHex ? { background: color } : {}),
+                    color: textColor
+                }}
             >
                 <div className={styles.textGroup}>
                     <div className={`${styles.name} ${styles.wipeFadeAnimation}`} style={{ animationDelay: `${(rank - 1) * 0.15 + 0.3}s` }}>{name}</div>
