@@ -35,13 +35,11 @@ export default function ScoreCard({ rank, name, party, score, color, image }) {
                     <img
                         src={image}
                         alt={name}
-                        className={styles.zoomAnimation}
                         style={{
                             width: '100%',
                             height: '100%',
                             objectFit: 'cover',
                             objectPosition: 'top',
-                            animationDelay: `${(rank - 1) * 0.15 + 0.6}s`
                         }}
                     />
                 ) : (
