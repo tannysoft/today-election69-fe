@@ -148,16 +148,8 @@ export default function AreaPage() {
         if (filteredAreas.length <= 1) return;
 
         const loopInterval = setInterval(() => {
-            // Fade out
-            setIsVisible(false);
-
-            setTimeout(() => {
-                // Change index after fade out
-                setCurrentIndex((prev) => (prev + 1) % filteredAreas.length);
-                // Fade in
-                setIsVisible(true);
-            }, 500); // Wait for fade out animation (500ms)
-
+            // Instant switch, let CSS animation handle the entrance
+            setCurrentIndex((prev) => (prev + 1) % filteredAreas.length);
         }, 5000); // 5 seconds per area
 
         return () => clearInterval(loopInterval);
@@ -196,12 +188,11 @@ export default function AreaPage() {
             </div>
 
             <div style={{
-                opacity: isVisible ? 1 : 0,
-                transition: 'opacity 0.5s ease-in-out',
                 width: '100%',
                 height: '100%'
             }}>
                 <LowerThird
+                    key={currentArea?.id}
                     areaName={currentArea?.name}
                     candidates={currentArea?.candidates}
                 />

@@ -7,6 +7,50 @@
     flex-direction: column;
     align-items: center;
     font-family: var(--font-dbheavent), sans-serif;
+    /* Entrance */
+    animation: slideUpMain 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+/* Animations */
+@keyframes slideUpMain {
+    0% {
+        transform: translateY(100%);
+        opacity: 0;
+    }
+
+    100% {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+@keyframes popInCard {
+    0% {
+        transform: scale(0.5) translateY(50px);
+        opacity: 0;
+    }
+
+    60% {
+        transform: scale(1.05) translateY(-10px);
+        opacity: 1;
+    }
+
+    100% {
+        transform: scale(1) translateY(0);
+        opacity: 1;
+    }
+}
+
+@keyframes textWipe {
+    0% {
+        clip-path: inset(0 100% 0 0);
+        opacity: 0;
+    }
+
+    100% {
+        clip-path: inset(0 0 0 0);
+        opacity: 1;
+    }
 }
 
 .cardsRow {
@@ -34,7 +78,7 @@
     /* Pull up to sit behind/under cards */
     padding-top: 40px;
     /* Compensate for negative margin */
-    padding-bottom: 20px;
+    padding-bottom: 13px;
 }
 
 /* Score Card */
@@ -48,6 +92,10 @@
     /* Changed from white to transparent as content has BG */
     box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
     overflow: visible;
+
+    /* Animation base */
+    opacity: 0;
+    animation: popInCard 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
 }
 
 .rankCircle {
@@ -169,12 +217,20 @@
     font-weight: 700;
     line-height: 2.2rem;
     margin-bottom: 0;
+
+    /* Text Wipe Animation */
+    opacity: 0;
+    animation: textWipe 0.5s ease-out forwards;
 }
 
 .party {
     font-size: 1.8rem;
     font-weight: 400;
     line-height: 2rem;
+
+    /* Text Wipe Animation */
+    opacity: 0;
+    animation: textWipe 0.5s ease-out forwards;
 }
 
 .scoreContainer {

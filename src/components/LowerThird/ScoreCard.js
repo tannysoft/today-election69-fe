@@ -61,8 +61,8 @@ export default function ScoreCard({ rank, name, party, partyLogoUrl, score, colo
                 )}
 
                 <div className={styles.textGroup}>
-                    <div className={`${styles.name} ${styles.wipeFadeAnimation}`} style={{ animationDelay: `${(rank - 1) * 0.15 + 0.3}s` }}>{name}</div>
-                    <div className={`${styles.party} ${styles.wipeFadeAnimation}`} style={{ animationDelay: `${(rank - 1) * 0.15 + 0.4}s` }}>{party}</div>
+                    <div className={`${styles.name} ${styles.wipeFadeAnimation}`} style={{ animationDelay: `${((rank - 1) * 0.15) + 0.3}s` }}>{name}</div>
+                    <div className={`${styles.party} ${styles.wipeFadeAnimation}`} style={{ animationDelay: `${((rank - 1) * 0.15) + 0.4}s` }}>{party}</div>
                 </div>
                 <div className={styles.scoreGroup}>
                     <div className={styles.score}>
