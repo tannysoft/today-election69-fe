@@ -7,36 +7,69 @@
     flex-direction: column;
     align-items: center;
     font-family: var(--font-dbheavent), sans-serif;
-    /* Entrance */
-    animation: slideUpMain 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    /* Entrance: Fade Only */
+    animation: fadeIn 0.5s ease-out forwards;
 }
 
 /* Animations */
-@keyframes slideUpMain {
+@keyframes fadeIn {
     0% {
-        transform: translateY(100%);
         opacity: 0;
     }
 
     100% {
-        transform: translateY(0);
         opacity: 1;
     }
 }
 
-@keyframes popInCard {
+@keyframes fadeOut {
     0% {
-        transform: scale(0.5) translateY(50px);
-        opacity: 0;
-    }
-
-    60% {
-        transform: scale(1.05) translateY(-10px);
         opacity: 1;
     }
 
     100% {
-        transform: scale(1) translateY(0);
+        opacity: 0;
+    }
+}
+
+/* Exit States applied via parent class */
+/* Exit States applied via parent class */
+.exitAnimation .card {
+    animation: fadeOut 0.5s ease-in forwards;
+    animation-delay: 0s !important;
+}
+
+.exitAnimation .barContainer {
+    animation: fadeOut 0.5s ease-in forwards;
+}
+
+@keyframes fadeInRightText {
+    0% {
+        transform: translateX(30px);
+        opacity: 0;
+    }
+
+    100% {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+.areaNameText {
+    display: inline-block;
+    opacity: 0;
+    animation: fadeInRightText 0.6s ease-out 0.2s forwards;
+    /* 0.2s delay to sync with bar fade */
+}
+
+@keyframes slideInRight {
+    0% {
+        transform: translateX(50px);
+        opacity: 0;
+    }
+
+    100% {
+        transform: translateX(0);
         opacity: 1;
     }
 }
@@ -60,7 +93,6 @@
     width: 100%;
     padding: 0 40px;
     margin-bottom: 0px;
-    /* Overlap with bar potentially */
     z-index: 2;
 }
 
@@ -75,27 +107,23 @@
     line-height: 2.2rem;
     z-index: 1;
     margin-top: -30px;
-    /* Pull up to sit behind/under cards */
     padding-top: 40px;
-    /* Compensate for negative margin */
     padding-bottom: 13px;
 }
 
 /* Score Card */
 .card {
-    /* display: flex; REMOVED flex to allow full width children */
     width: 550px;
     height: 140px;
     border-radius: 70px;
     position: relative;
     background: transparent;
-    /* Changed from white to transparent as content has BG */
     box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
     overflow: visible;
 
-    /* Animation base */
+    /* Animation: Slide In Right */
     opacity: 0;
-    animation: popInCard 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+    animation: slideInRight 0.5s cubic-bezier(0.19, 1, 0.22, 1) forwards;
 }
 
 .rankCircle {
@@ -119,9 +147,7 @@
 .rankBottom .rankCircle {
     width: 100%;
     height: 100%;
-    /* Match card height */
     top: 40px;
-    /* Shift down to peek out */
     left: 0;
     right: auto;
     bottom: auto;
@@ -131,11 +157,8 @@
     color: white;
     font-size: 1.5rem;
     align-items: flex-end;
-    /* Text at bottom */
     padding-bottom: 0;
-    /* Space for text */
     z-index: 5;
-    /* Behind cardContent (10) */
 }
 
 .portraitCircle {
@@ -146,12 +169,9 @@
     background: white;
     border: 4px solid white;
     position: absolute;
-    /* Absolute positioning */
     top: 5px;
-    /* Center vertically within 140px height */
     left: 5px;
     z-index: 20;
-    /* Higher than content */
     overflow: hidden;
 }
 
@@ -172,11 +192,8 @@
     border-top-right-radius: 70px;
     border-bottom-right-radius: 70px;
     color: black;
-    /* Text color on background */
     position: relative;
-    /* Create context for watermark */
     overflow: hidden;
-    /* Clip watermark */
 }
 
 .watermarkLogo {
@@ -190,35 +207,14 @@
     pointer-events: none;
     filter: grayscale(100%);
     z-index: 1;
-    /* Behind text (text should be z-index 10) */
     mix-blend-mode: multiply;
-    /* Optional: better blending */
 }
-
-/* Specific background colors classes */
-/* .bgOrange {
-    background: linear-gradient(90deg, #F97316 0%, #EA580C 100%);
-}
-
-.bgRed {
-    background: linear-gradient(90deg, #EF4444 0%, #DC2626 100%);
-}
-
-.bgBlue {
-    background: linear-gradient(90deg, #3B82F6 0%, #2563EB 100%);
-}
-
-.bgGreen {
-    background: linear-gradient(90deg, #22C55E 0%, #16A34A 100%);
-} */
 
 .name {
     font-size: 2.2rem;
     font-weight: 700;
     line-height: 2.2rem;
     margin-bottom: 0;
-
-    /* Text Wipe Animation */
     opacity: 0;
     animation: textWipe 0.5s ease-out forwards;
 }
@@ -227,8 +223,6 @@
     font-size: 1.8rem;
     font-weight: 400;
     line-height: 2rem;
-
-    /* Text Wipe Animation */
     opacity: 0;
     animation: textWipe 0.5s ease-out forwards;
 }
@@ -253,18 +247,12 @@
     line-height: 1.5rem;
 }
 
-/* Adjust layout to fill the colored part properly */
 .cardContent {
     width: 100%;
-    /* User Request: 100% width */
     height: 100%;
     position: relative;
-    /* Margin removed, using padding to offset text */
     padding-left: 140px;
-    /* Space for portrait (130px) + gap */
-
     border-radius: 70px;
-    /* Fully rounded to match card */
     color: black;
     z-index: 10;
     overflow: hidden;
@@ -276,7 +264,6 @@
     left: 0;
     width: 100%;
     padding-left: 150px;
-    /* Clear portrait overlap */
     padding-right: 20px;
     z-index: 2;
 }
@@ -290,60 +277,5 @@
     flex-direction: column;
     align-items: flex-end;
     padding-right: 35px;
-    /* Clear rounded corner */
     z-index: 2;
-}
-
-/* Rank 1 special styling? */
-.rank1 .infoArea {
-    /* box-shadow: inset 0 0 20px rgba(255,255,255,0.3); */
-}
-
-@keyframes fadeUp {
-    from {
-        opacity: 0;
-        transform: translateY(20px);
-    }
-
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
-
-.fadeUpAnimation {
-    animation: fadeUp 0.6s ease-out forwards;
-    opacity: 0;
-}
-
-@keyframes wipeFade {
-    from {
-        clip-path: inset(0 100% 0 0);
-        opacity: 0;
-    }
-
-    to {
-        clip-path: inset(0 0 0 0);
-        opacity: 1;
-    }
-}
-
-.wipeFadeAnimation {
-    animation: wipeFade 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
-    opacity: 0;
-    /* Ensures it starts invisible */
-}
-
-@keyframes slowZoom {
-    from {
-        transform: scale(1);
-    }
-
-    to {
-        transform: scale(1.5);
-    }
-}
-
-.zoomAnimation {
-    animation: slowZoom 15s ease-out forwards;
 }

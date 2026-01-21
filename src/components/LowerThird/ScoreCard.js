@@ -26,8 +26,8 @@ export default function ScoreCard({ rank, name, party, partyLogoUrl, score, colo
 
     return (
         <div
-            className={`${styles.card} ${styles.fadeUpAnimation} ${rank === 1 ? styles.rank1 : ''} ${rankPosition === 'bottom' ? styles.rankBottom : ''}`}
-            style={{ animationDelay: `${(rank - 1) * 0.15}s` }}
+            className={`${styles.card} ${rank === 1 ? styles.rank1 : ''} ${rankPosition === 'bottom' ? styles.rankBottom : ''}`}
+            style={{ animationDelay: `${(rank - 1) * 0.15 + 0.3}s` }}
         >
             {/* Portrait */}
             <div className={styles.portraitCircle}>
@@ -61,8 +61,8 @@ export default function ScoreCard({ rank, name, party, partyLogoUrl, score, colo
                 )}
 
                 <div className={styles.textGroup}>
-                    <div className={`${styles.name} ${styles.wipeFadeAnimation}`} style={{ animationDelay: `${((rank - 1) * 0.15) + 0.3}s` }}>{name}</div>
-                    <div className={`${styles.party} ${styles.wipeFadeAnimation}`} style={{ animationDelay: `${((rank - 1) * 0.15) + 0.4}s` }}>{party}</div>
+                    <div className={styles.name} style={{ animationDelay: `${((rank - 1) * 0.15) + 0.6}s` }}>{name}</div>
+                    <div className={styles.party} style={{ animationDelay: `${((rank - 1) * 0.15) + 0.7}s` }}>{party}</div>
                 </div>
                 <div className={styles.scoreGroup}>
                     <div className={styles.score}>

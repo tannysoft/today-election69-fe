@@ -143,17 +143,26 @@ export default function AreaPage() {
     }, [allAreas, filterProvince, filterDistrict, hideZeroScore]);
 
 
+    const [isExiting, setIsExiting] = useState(false);
+
     // Cycling Logic
     useEffect(() => {
         if (filteredAreas.length <= 1) return;
 
         const loopInterval = setInterval(() => {
-            // Instant switch, let CSS animation handle the entrance
-            setCurrentIndex((prev) => (prev + 1) % filteredAreas.length);
-        }, 5000); // 5 seconds per area
+            // 1. Start Exit Animation
+            setIsExiting(true);
+
+            // 2. Wait for animation to finish, then switch data
+            setTimeout(() => {
+                setCurrentIndex((prev) => (prev + 1) % filteredAreas.length);
+                setIsExiting(false);
+            }, 500); // 0.5s duration to match CSS
+
+        }, 5000); // 5 seconds per area (including transition)
 
         return () => clearInterval(loopInterval);
-    }, [filteredAreas]); // Re-run when filtered list changes
+    }, [filteredAreas]);
 
     // Safe access
     // Guard against index out of bounds if list shrinks
@@ -195,6 +204,7 @@ export default function AreaPage() {
                     key={currentArea?.id}
                     areaName={currentArea?.name}
                     candidates={currentArea?.candidates}
+                    isExiting={isExiting}
                 />
             </div>
         </div>
