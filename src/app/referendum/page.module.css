@@ -31,4 +31,9 @@
     font-size: 3rem;
     font-weight: 700;
     text-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+    transition: opacity 0.5s ease;
+}
+
+:global(body.remove-bg) .titleArea {
+    opacity: 0;
 }

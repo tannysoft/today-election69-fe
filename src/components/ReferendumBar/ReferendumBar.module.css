@@ -8,22 +8,87 @@
     color: #000;
 }
 
+
+/* Animations */
+@keyframes slideUpMain {
+    0% {
+        transform: translateY(100%);
+        opacity: 0;
+    }
+
+    100% {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+@keyframes popIn {
+    0% {
+        transform: translateY(-50%) scale(0);
+        opacity: 0;
+    }
+
+    60% {
+        transform: translateY(-50%) scale(1.1);
+        opacity: 1;
+    }
+
+    100% {
+        transform: translateY(-50%) scale(1);
+        opacity: 1;
+    }
+}
+
+@keyframes fadeIn {
+    0% {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes slideDownAbstain {
+    0% {
+        transform: translateY(-100%);
+        opacity: 0;
+    }
+
+    100% {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
 .mainBar {
     display: flex;
     align-items: center;
     justify-content: space-between;
     background: white;
     height: 80px;
-    /* Slimmer than before to match image */
     border-radius: 4px;
-    /* Slightly rounded or square */
     padding: 0 80px;
-    /* Space for icons on sides */
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
     position: relative;
+    /* Animation */
+    opacity: 0;
+    /* Start hidden */
+    animation: slideUpMain 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    z-index: 10;
 }
 
-/* Sections */
+/* Sections with delay */
+.leftSection,
+.rightSection,
+.divider {
+    opacity: 0;
+    animation: fadeIn 0.5s ease forwards;
+    animation-delay: 0.4s;
+}
+
 .leftSection,
 .rightSection {
     display: flex;
@@ -35,13 +100,11 @@
 
 .leftSection {
     justify-content: flex-end;
-    /* Push to center */
     padding-right: 20px;
 }
 
 .rightSection {
     justify-content: flex-start;
-    /* Push to center */
     padding-left: 20px;
 }
 
@@ -76,7 +139,6 @@
 .iconCircle {
     position: absolute;
     width: 140px;
-    /* Large circle */
     height: 140px;
     border-radius: 50%;
     display: flex;
@@ -85,21 +147,22 @@
     top: 50%;
     transform: translateY(-50%);
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
-    z-index: 10;
+    z-index: 20;
+    /* Higher than mainBar */
+    /* Animation */
+    opacity: 0;
+    animation: popIn 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+    animation-delay: 0.3s;
 }
 
 .iconLeft {
     left: -70px;
-    /* Overlap half */
     background-color: #4CAF50;
-    /* Green */
 }
 
 .iconRight {
     right: -70px;
-    /* Overlap half */
     background-color: #EF5350;
-    /* Red */
 }
 
 .icon svg {
@@ -113,7 +176,6 @@
     background: #000;
     color: white;
     width: 90%;
-    /* Slightly narrower than main bar */
     margin: 0 auto;
     height: 60px;
     display: flex;
@@ -124,8 +186,13 @@
     border-bottom-right-radius: 10px;
     position: relative;
     top: 0px;
-    /* Flush with bottom of white bar? Image shows it below */
     z-index: 5;
+    /* Behind mainBar visually but layout wise it's below. */
+    /* Animation */
+    opacity: 0;
+    animation: slideDownAbstain 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    animation-delay: 0.6s;
+    transform-origin: top center;
 }
 
 .abstainLabel {
