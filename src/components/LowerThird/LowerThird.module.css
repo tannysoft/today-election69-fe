@@ -212,18 +212,19 @@
 }
 
 .name {
-    font-size: 2.2rem;
+    padding-right: 22px;
+    font-size: 2.3rem;
     font-weight: 700;
-    line-height: 2.2rem;
+    line-height: 2.25rem;
     margin-bottom: 0;
     opacity: 0;
     animation: textWipe 0.5s ease-out forwards;
 }
 
 .party {
-    font-size: 1.8rem;
+    font-size: 2rem;
     font-weight: 400;
-    line-height: 2rem;
+    line-height: 2.2rem;
     opacity: 0;
     animation: textWipe 0.5s ease-out forwards;
 }
