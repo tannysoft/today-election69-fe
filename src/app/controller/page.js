@@ -130,12 +130,11 @@ export default function ControllerPage() {
     };
 
     const handleReset = () => {
-        // Reset both pending and applied
+        // Reset only filters, keep system toggles (hideZero, removeBg)
         setSelectedProvince("");
         setSelectedDistrict("");
-        setHideZero(false);
-        setRemoveBg(false);
-        handleUpdate("", "", false, false);
+        // Keep current status of toggles
+        handleUpdate("", "", hideZero, removeBg);
     };
 
     // Filter districts based on selected province

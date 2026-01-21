@@ -5,7 +5,7 @@
     background-color: #1a1a1a;
     min-height: 100vh;
     color: white;
-    font-family: sans-serif;
+    font-family: var(--font-dbheavent);
 }
 
 .title {
@@ -59,7 +59,7 @@
 }
 
 .activeFilters {
-    font-family: monospace;
+    font-family: var(--font-dbheavent);
     color: #4caf50;
 }
 

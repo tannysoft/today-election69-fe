@@ -75,7 +75,7 @@ const dbHeavent = localFont({
       style: 'italic',
     },
   ],
-  variable: '--font-prompt', // Hijack existing variable
+  variable: '--font-dbheavent', // Hijack existing variable
 });
 
 export const metadata = {
