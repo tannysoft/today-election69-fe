@@ -137,8 +137,8 @@ export default function AreaFullPage() {
             }}>
                 {/* Header */}
                 <div className={styles.headerArea} key={currentArea.id}>
-                    <div className={`${styles.province} ${styles.animFadeUp}`} style={{ animationDelay: '0.1s' }}>{currentArea._provinceName}</div>
-                    <div className={`${styles.zone} ${styles.animFadeUp}`} style={{ animationDelay: '0.3s' }}>เขต {currentArea._zoneNumber}</div>
+                    <div className={`${styles.province} ${styles.animFadeInRight}`} style={{ animationDelay: '0.1s' }}>{currentArea._provinceName}</div>
+                    <div className={`${styles.zone} ${styles.animFadeInRight}`} style={{ animationDelay: '0.3s' }}>เขต {currentArea._zoneNumber}</div>
                 </div>
 
                 {/* Rank 1 */}

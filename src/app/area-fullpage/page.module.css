@@ -63,19 +63,19 @@
     /* transform: scale(0.9); */
 }
 
-@keyframes fadeUp {
-    from {
+@keyframes fadeInRightText {
+    0% {
+        transform: translateX(30px);
         opacity: 0;
-        transform: translateY(20px);
     }
 
-    to {
+    100% {
+        transform: translateX(0);
         opacity: 1;
-        transform: translateY(0);
     }
 }
 
-.animFadeUp {
-    animation: fadeUp 0.6s ease-out forwards;
+.animFadeInRight {
+    animation: fadeInRightText 0.6s ease-out forwards;
     opacity: 0;
 }
