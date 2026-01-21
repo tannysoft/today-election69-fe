@@ -16,6 +16,10 @@ const ThumbsDownIcon = () => (
 );
 
 export default function ReferendumBar({ approve, disapprove, noVote, title }) {
+    const renderScore = (value) => {
+        return value > 0 ? <CountUp end={value} separator="," duration={2} /> : null;
+    };
+
     return (
         <div className={styles.container}>
             {/* Main White Bar */}
@@ -30,7 +34,7 @@ export default function ReferendumBar({ approve, disapprove, noVote, title }) {
                 {/* Left Content */}
                 <div className={styles.leftSection}>
                     <div className={`${styles.score} ${styles.scoreBlack}`}>
-                        <CountUp end={approve} separator="," duration={2} />
+                        {renderScore(approve)}
                     </div>
                     <div className={styles.label}>เห็นชอบ</div>
                 </div>
@@ -42,7 +46,7 @@ export default function ReferendumBar({ approve, disapprove, noVote, title }) {
                 <div className={styles.rightSection}>
                     <div className={styles.label}>ไม่เห็นชอบ</div>
                     <div className={`${styles.score} ${styles.scoreBlack}`}>
-                        <CountUp end={disapprove} separator="," duration={2} />
+                        {renderScore(disapprove)}
                     </div>
                 </div>
 
@@ -58,7 +62,7 @@ export default function ReferendumBar({ approve, disapprove, noVote, title }) {
             <div className={styles.abstainBar}>
                 <span className={styles.abstainLabel}>ไม่ประสงค์ลงคะแนน</span>
                 <div className={styles.abstainScoreBox}>
-                    <CountUp end={noVote} separator="," duration={2} />
+                    {renderScore(noVote)}
                 </div>
             </div>
         </div>
