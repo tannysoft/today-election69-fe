@@ -63,13 +63,13 @@ export async function getElectionData(limit = 3) {
     }
 }
 
-export async function getPartyListData() {
+export async function getPartyListData(sortField = '-totalSeats') {
     try {
         await pb.admins.authWithPassword(process.env.POCKETBASE_ADMIN_EMAIL, process.env.POCKETBASE_ADMIN_PASSWORD);
 
         // 1. Fetch from 'parties' directly
         const results = await pb.collection('parties').getFullList({
-            sort: '-totalSeats',
+            sort: sortField,
         });
 
         console.log("DEBUG: Parties count:", results.length);
@@ -82,7 +82,11 @@ export async function getPartyListData() {
                 count: record.totalSeats || 0,
                 color: record.color || 'orange',
                 logoUrl: record.logoUrl || null,
-                leader: record.leader ? pb.files.getUrl(record, record.leader) : null
+                leader: record.leader ? pb.files.getUrl(record, record.leader) : null,
+                logoUrl: record.logoUrl || null,
+                leader: record.leader ? pb.files.getUrl(record, record.leader) : null,
+                percentage: record.percentage || 0,
+                partylistCount: record.partyListSeats || 0
             };
         });
 
