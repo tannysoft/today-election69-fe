@@ -1,0 +1,149 @@
+.container {
+    width: 60%;
+    /* Adjust width to match image relative to screen */
+    min-width: 900px;
+    margin: 0 auto;
+    position: relative;
+    font-family: var(--font-dbheavent);
+    color: #000;
+}
+
+.mainBar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: white;
+    height: 80px;
+    /* Slimmer than before to match image */
+    border-radius: 4px;
+    /* Slightly rounded or square */
+    padding: 0 80px;
+    /* Space for icons on sides */
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+    position: relative;
+}
+
+/* Sections */
+.leftSection,
+.rightSection {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 55px;
+    flex: 1;
+}
+
+.leftSection {
+    justify-content: flex-end;
+    /* Push to center */
+    padding-right: 20px;
+}
+
+.rightSection {
+    justify-content: flex-start;
+    /* Push to center */
+    padding-left: 20px;
+}
+
+/* Divider */
+.divider {
+    width: 2px;
+    height: 50%;
+    background-color: #000;
+}
+
+/* Text Styles */
+.label {
+    font-size: 2.5rem;
+    font-weight: 500;
+    line-height: 2rem;
+    padding-top: 3px;
+}
+
+.score {
+    font-size: 3.8rem;
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+    line-height: 3rem;
+}
+
+.scoreBlack {
+    color: #000;
+}
+
+
+/* Absolute Icons */
+.iconCircle {
+    position: absolute;
+    width: 140px;
+    /* Large circle */
+    height: 140px;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    top: 50%;
+    transform: translateY(-50%);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+    z-index: 10;
+}
+
+.iconLeft {
+    left: -70px;
+    /* Overlap half */
+    background-color: #4CAF50;
+    /* Green */
+}
+
+.iconRight {
+    right: -70px;
+    /* Overlap half */
+    background-color: #EF5350;
+    /* Red */
+}
+
+.icon svg {
+    width: 70px;
+    height: 70px;
+    fill: white;
+}
+
+/* Abstain Bar */
+.abstainBar {
+    background: #000;
+    color: white;
+    width: 90%;
+    /* Slightly narrower than main bar */
+    margin: 0 auto;
+    height: 60px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 20px;
+    border-bottom-left-radius: 10px;
+    border-bottom-right-radius: 10px;
+    position: relative;
+    top: 0px;
+    /* Flush with bottom of white bar? Image shows it below */
+    z-index: 5;
+}
+
+.abstainLabel {
+    font-size: 2rem;
+    font-weight: 400;
+    line-height: 2rem;
+}
+
+.abstainScoreBox {
+    background: white;
+    color: #000;
+    padding: 0 30px;
+    height: 40px;
+    border-radius: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2.2rem;
+    font-weight: 700;
+    min-width: 120px;
+}

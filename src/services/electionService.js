@@ -93,3 +93,40 @@ export async function getPartyListData() {
         return [];
     }
 }
+
+export async function getReferendumData() {
+    try {
+        await pb.admins.authWithPassword(process.env.POCKETBASE_ADMIN_EMAIL, process.env.POCKETBASE_ADMIN_PASSWORD);
+
+        // Try to fetch from 'referendum' collection
+        // Sort by -created to get the latest active one
+        const list = await pb.collection('referendum').getList(1, 1, {
+            sort: '-created'
+        });
+        if (list.items.length > 0) {
+            return {
+                approve: list.items[0].agreeTotalVotes || 0,
+                disapprove: list.items[0].disagreeTotalVotes || 0,
+                no_vote: list.items[0].noVotes || 0,
+                title: list.items[0].title || "หัวข้อประชามติ"
+            };
+        } else {
+            // Mock Data if collection exists but empty or logic above falls through
+            return {
+                approve: 0,
+                disapprove: 0,
+                no_vote: 0,
+                title: "คุณเห็นชอบหรือไม่ที่จะมีการแก้ไขรัฐธรรมนูญ?"
+            };
+        }
+    } catch (error) {
+        // Fallback Mock Data if collection doesn't exist
+        console.warn("Using mock data for referendum:", error.message);
+        return {
+            approve: 654321,
+            disapprove: 123456,
+            no_vote: 5432,
+            title: "คุณเห็นชอบหรือไม่ที่จะมีการแก้ไขรัฐธรรมนูญ?"
+        };
+    }
+}

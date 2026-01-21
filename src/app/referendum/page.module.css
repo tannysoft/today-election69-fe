@@ -1,0 +1,34 @@
+.container {
+    width: 1920px;
+    height: 1080px;
+    overflow: hidden;
+    position: relative;
+    /* Default Background (Dark Gradient) - can be overridden by var(--bg-studio) */
+    background: var(--bg-studio, radial-gradient(circle at center, #1f2937 0%, #111827 100%));
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    /* Align to bottom */
+    padding-bottom: 50px;
+    /* Spacing from bottom edge */
+    align-items: center;
+}
+
+.contentArea {
+    width: 90%;
+    margin-bottom: 15px;
+    /* Adjust vertical position */
+}
+
+/* Optional: Title area at top if needed */
+.titleArea {
+    position: absolute;
+    top: 100px;
+    width: 100%;
+    text-align: center;
+    color: white;
+    font-family: var(--font-dbheavent);
+    font-size: 3rem;
+    font-weight: 700;
+    text-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+}
