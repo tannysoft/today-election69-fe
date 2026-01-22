@@ -147,7 +147,7 @@
     position: relative;
     padding-left: 260px;
     /* Space for portrait */
-    padding-right: 20px;
+    padding-right: 45px;
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -194,7 +194,7 @@
 
 .name {
     margin-top: 4px;
-    font-size: 2.4rem;
+    font-size: 2.5rem;
     font-weight: 700;
     line-height: 2.2rem;
     color: white;
