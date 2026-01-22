@@ -90,15 +90,22 @@ export default function ScoreCard({ rank, name, title, firstName, lastName, part
                     <img
                         src={imageUrl}
                         alt={name}
+                        className={styles.portraitImage}
                         style={{
-                            width: '100%',
-                            height: '100%',
-                            objectFit: 'cover',
                             objectPosition: 'center 10px',
                         }}
                     />
                 ) : (
                     <div style={{ width: '100%', height: '100%', background: '#ccc' }} />
+                )}
+
+                {/* Party Logo Overlay - Bottom Left of Portrait */}
+                {partyLogoUrl && (
+                    <img
+                        src={partyLogoUrl}
+                        className={styles.partyLogoOverlay}
+                        alt="Party Logo"
+                    />
                 )}
             </div>
 

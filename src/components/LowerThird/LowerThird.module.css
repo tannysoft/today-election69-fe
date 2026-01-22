@@ -177,14 +177,32 @@
     /* Center somewhat relative to total height */
     left: 64px;
     z-index: 30;
-    overflow: hidden;
+    z-index: 30;
+    /* overflow: hidden; Removed */
     box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
 }
 
-.portraitCircle img {
+.partyLogoOverlay {
+    position: absolute;
+    bottom: -3px;
+    /* Slight offset to pop out */
+    left: -8px;
+    width: 45px;
+    /* Slightly larger? */
+    height: 45px;
+    border-radius: 50%;
+    border: 2px solid white;
+    background: white;
+    object-fit: contain;
+    z-index: 50;
+}
+
+.portraitImage {
     width: 100%;
     height: 100%;
     object-fit: cover;
+    border-radius: 50%;
+    /* Apply shape here */
 }
 
 /* Info Content (Top Bar) */
