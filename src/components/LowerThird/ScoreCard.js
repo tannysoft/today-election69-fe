@@ -55,20 +55,8 @@ export default function ScoreCard({ rank, name, title, firstName, lastName, part
         img.onerror = () => setBgUrl('/parties/default.svg');
     }, [party]);
 
-    // Helper to determine text color based on background brightness
-    const getTextColor = (hex) => {
-        if (!hex) return 'white'; // Default for gradients/missing
-        // Convert hex to RGB
-        const r = parseInt(hex.slice(1, 3), 16);
-        const g = parseInt(hex.slice(3, 5), 16);
-        const b = parseInt(hex.slice(5, 7), 16);
-        // Calculate YIQ brightness
-        const yiq = ((r * 299) + (g * 587) + (b * 114)) / 1000;
-        return (yiq >= 128) ? 'black' : 'white';
-    };
-
     const isHex = color?.startsWith('#');
-    const scoreColor = isHex ? getTextColor(color) : 'white';
+    // const scoreColor = isHex ? getTextColor(color) : 'white'; // Removed dynamic color
 
     return (
         <div
@@ -142,7 +130,7 @@ export default function ScoreCard({ rank, name, title, firstName, lastName, part
                     }}
                 >
                     <div className={styles.scoreContent}>
-                        <div className={styles.scoreMain} style={{ color: scoreColor }}>
+                        <div className={styles.scoreMain}>
                             <CountUp end={score} duration={1} separator="," />
                         </div>
 
