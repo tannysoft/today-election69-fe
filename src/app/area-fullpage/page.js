@@ -20,7 +20,7 @@ export default function AreaFullPage() {
     useEffect(() => {
         // Fetch data on mount (limit 7)
         async function fetchData() {
-            const data = await getElectionData(7);
+            const data = await getElectionData(5);
             if (data && data.length > 0) {
                 setAllAreas(data);
             }
@@ -125,7 +125,7 @@ export default function AreaFullPage() {
     }
 
     const rank1Candidate = currentArea.candidates[0];
-    const otherCandidates = currentArea.candidates.slice(1, 7);
+    const otherCandidates = currentArea.candidates.slice(1, 5);
 
     return (
         <div className={`${styles.container} ${styles.studioBackground}`}>
@@ -135,26 +135,31 @@ export default function AreaFullPage() {
                 width: '100%',
                 height: '100%'
             }}>
-                {/* Header */}
+                {/* Header: Top Left */}
                 <div className={styles.headerArea} key={currentArea.id}>
                     <div className={`${styles.province} ${styles.animFadeInRight}`} style={{ animationDelay: '0.1s' }}>{currentArea._provinceName}</div>
-                    <div className={`${styles.zone} ${styles.animFadeInRight}`} style={{ animationDelay: '0.3s' }}>เขต {currentArea._zoneNumber}</div>
+                    <div className={`${styles.zonePill} ${styles.animFadeInRight}`} style={{ animationDelay: '0.3s' }}>
+                        <span>เขต {currentArea._zoneNumber}</span>
+                    </div>
                 </div>
 
-                {/* Rank 1 */}
-                <div className={styles.rank1Area}>
-                    {rank1Candidate && (
-                        <ScoreCard key={rank1Candidate.id} {...rank1Candidate} rankPosition="bottom" />
-                    )}
-                </div>
+                {/* Main Content Area */}
+                <div className={styles.contentArea}>
+                    {/* Rank 1 - Centered Top */}
+                    <div className={styles.rank1Area}>
+                        {rank1Candidate && (
+                            <ScoreCard key={rank1Candidate.id} {...rank1Candidate} />
+                        )}
+                    </div>
 
-                {/* Grid (Ranks 2-7) */}
-                <div className={styles.gridArea}>
-                    {otherCandidates.map(c => (
-                        <div key={c.id} className={styles.gridItem}>
-                            <ScoreCard {...c} rankPosition="bottom" />
-                        </div>
-                    ))}
+                    {/* Grid (Ranks 2-5) - 2 Columns */}
+                    <div className={styles.gridArea}>
+                        {otherCandidates.map(c => (
+                            <div key={c.id} className={styles.gridItem}>
+                                <ScoreCard {...c} />
+                            </div>
+                        ))}
+                    </div>
                 </div>
             </div>
         </div>
