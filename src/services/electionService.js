@@ -21,7 +21,7 @@ export async function getElectionData(limit = 3) {
         });
 
         // 3. Map candidates to areas
-        const areasWithCandidates = areas.map(area => {
+        const areasWithCandidates = areas.map((area, index) => {
             // Filter candidates for this area
             const areaCandidates = candidates
                 .filter(c => c.area === area.id)
@@ -30,11 +30,17 @@ export async function getElectionData(limit = 3) {
                     id: c.id,
                     rank: index + 1,
                     name: c.name,
+                    title: c.title,
+                    firstName: c.firstName,
+                    lastName: c.lastName,
                     party: c.expand?.party?.name || c.party || "",
                     partyLogoUrl: c.expand?.party?.logoUrl || null,
                     score: c.totalVotes,
                     color: c.expand?.party?.color || c.color || 'orange', // Party color > Candidate color > Default
-                    image: c.photoUrl || (c.image ? pb.files.getUrl(c, c.image) : null)
+                    image: c.photoUrl || (c.image ? pb.files.getUrl(c, c.image) : null),
+                    candidateNumber: c.number,
+                    areaNumber: area.number,
+                    provinceId: area.expand?.province?.code || area.expand?.province?.id // Prefer code, fallback to id
                 }));
 
             return {

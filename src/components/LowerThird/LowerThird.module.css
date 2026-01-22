@@ -33,7 +33,6 @@
 }
 
 /* Exit States applied via parent class */
-/* Exit States applied via parent class */
 .exitAnimation .card {
     animation: fadeOut 0.5s ease-in forwards;
     animation-delay: 0s !important;
@@ -62,14 +61,14 @@
     /* 0.2s delay to sync with bar fade */
 }
 
-@keyframes slideInRight {
+@keyframes slideInUp {
     0% {
-        transform: translateX(50px);
+        transform: translateY(100px);
         opacity: 0;
     }
 
     100% {
-        transform: translateX(0);
+        transform: translateY(0);
         opacity: 1;
     }
 }
@@ -89,195 +88,195 @@
 .cardsRow {
     display: flex;
     justify-content: center;
-    gap: 20px;
+    gap: 10px;
     width: 100%;
     padding: 0 40px;
-    margin-bottom: 0px;
+    margin-bottom: 5px;
     z-index: 2;
 }
 
 .barContainer {
-    width: 100%;
-    background: #000000;
+    width: 1742px;
+    max-width: 100%;
+    height: 72px;
+    background: url('/bg-area-name.png') center bottom / contain no-repeat;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     color: white;
-    text-align: center;
-    padding: 10px 0;
-    font-size: 2.3rem;
+    font-size: 3rem;
     font-weight: 700;
-    line-height: 2.2rem;
+    line-height: 1;
     z-index: 1;
     margin-top: -30px;
-    padding-top: 40px;
-    padding-bottom: 13px;
+    padding-top: 20px;
+    filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.5));
 }
 
-/* Score Card */
+/* Score Card Container */
 .card {
-    width: 550px;
-    height: 140px;
-    border-radius: 70px;
+    width: 603px;
+    height: 135px;
+    /* Slightly taller for 2 rows */
     position: relative;
     background: transparent;
-    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
-    overflow: visible;
-
-    /* Animation: Slide In Right */
     opacity: 0;
-    animation: slideInRight 0.5s cubic-bezier(0.19, 1, 0.22, 1) forwards;
-}
-
-.rankCircle {
-    position: absolute;
-    top: -5px;
-    right: -5px;
-    width: 60px;
-    height: 60px;
-    background: white;
-    border-radius: 50%;
-    color: black;
-    font-weight: 800;
-    font-size: 4rem;
+    animation: slideInUp 0.5s cubic-bezier(0.19, 1, 0.22, 1) forwards;
+    transform-origin: bottom center;
     display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 10;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    flex-direction: column;
 }
 
-.rankBottom .rankCircle {
+/* Inner Wrappers */
+.cardInner {
     width: 100%;
     height: 100%;
-    top: 40px;
-    left: 0;
-    right: auto;
-    bottom: auto;
-    transform: none;
-    border-radius: 70px;
-    background: black;
-    color: white;
-    font-size: 1.5rem;
-    align-items: flex-end;
-    padding-bottom: 0;
-    z-index: 5;
+    display: flex;
+    flex-direction: column;
+    overflow: visible;
+    /* Let portrait pop out if needed, but clip content within rows */
+    /* box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3); */
 }
 
+/* Top Row: Black */
+.topRow {
+    flex: 0 0 50%;
+    /* Top half */
+    background: transparent;
+    /* SVG shows through */
+    position: relative;
+    padding-left: 260px;
+    /* Space for portrait */
+    padding-right: 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+/* Bottom Row: Colored */
+.bottomRow {
+    flex: 1;
+    position: relative;
+    padding-left: 180px;
+    padding-right: 0px;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+}
+
+
+/* Portrait Circle */
 .portraitCircle {
-    width: 130px;
-    height: 130px;
-    min-width: 130px;
+    width: 125px;
+    height: 125px;
     border-radius: 50%;
     background: white;
     border: 4px solid white;
     position: absolute;
     top: 5px;
-    left: 5px;
-    z-index: 20;
+    /* Center somewhat relative to total height */
+    left: 64px;
+    z-index: 30;
     overflow: hidden;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
 }
 
 .portraitCircle img {
     width: 100%;
     height: 100%;
     object-fit: cover;
-    transform: scale(1.1);
 }
 
-.infoArea {
-    flex: 1;
-    height: 100%;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    padding-left: 20px;
-    padding-right: 30px;
-    border-top-right-radius: 70px;
-    border-bottom-right-radius: 70px;
-    color: black;
-    position: relative;
-    overflow: hidden;
-}
-
-.watermarkLogo {
-    position: absolute;
-    top: 50%;
-    right: 0;
-    height: 144%;
-    width: auto;
-    opacity: 0.2;
-    transform: translateY(-50%);
-    pointer-events: none;
-    filter: grayscale(100%);
-    z-index: 1;
-    mix-blend-mode: multiply;
+/* Info Content (Top Bar) */
+.infoContent {
+    transform-origin: left center;
 }
 
 .name {
-    padding-right: 25px;
-    font-size: 2.3rem;
+    margin-top: 5px;
+    font-size: 2.2rem;
     font-weight: 700;
-    line-height: 2.25rem;
+    line-height: 1;
+    color: white;
+    white-space: nowrap;
     margin-bottom: 0;
-    opacity: 0;
-    animation: textWipe 0.5s ease-out forwards;
 }
 
 .party {
-    font-size: 1.9rem;
+    font-size: 1.4rem;
     font-weight: 400;
-    line-height: 2rem;
-    opacity: 0;
-    animation: textWipe 0.5s ease-out forwards;
+    color: #ccc;
+    line-height: 1;
 }
 
-.scoreContainer {
-    display: flex;
-    align-items: baseline;
-    justify-content: flex-end;
-    margin-top: 5px;
-}
-
-.score {
-    font-size: 5rem;
-    font-weight: 800;
-    line-height: 2.5rem;
-}
-
-.scoreLabel {
-    padding-right: 2px;
-    font-size: 1.2rem;
-    font-weight: 500;
-    line-height: 1.5rem;
-}
-
-.cardContent {
+/* Score Content (Bottom Bar) */
+.scoreContent {
     width: 100%;
-    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding-right: 45px;
+    /* Push it left a bit so it doesn't hit the tab? */
     position: relative;
-    padding-left: 140px;
-    border-radius: 70px;
-    color: black;
-    z-index: 10;
-    overflow: hidden;
+    height: 100%;
 }
 
-.textGroup {
-    position: absolute;
-    top: 15px;
-    left: 0;
-    width: 100%;
-    padding-left: 150px;
-    padding-right: 20px;
-    z-index: 2;
+.scoreMain {
+    font-size: 5rem;
+    /* Large! */
+    font-weight: 800;
+    color: white;
+    line-height: 4.5rem;
+    text-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
 }
 
-.scoreGroup {
+/* Score Label Tab (Black Slanted on Right) - Removed skew/clip-path for flat design */
+.scoreLabelTab {
     position: absolute;
-    bottom: 10px;
-    right: 0;
-    width: 100%;
+    right: 10px;
+    /* Adjusting position */
+    bottom: 4px;
+    width: 113px;
+    height: 41px;
+    background: url('/bg-score-unit.svg') center center / contain no-repeat;
     display: flex;
-    flex-direction: column;
-    align-items: flex-end;
-    padding-right: 35px;
-    z-index: 2;
+    align-items: center;
+    justify-content: center;
+    /* color: white; */
+    color: black;
+    /* Assuming black text on light SVG, or check SVG color. If SVG is black, text white. */
+    /* User said "use background ... font DB Bold 29px". Usually unit is small. */
+    /* Let's Try White first if SVG is dark. Or Black if SVG is light. */
+    /* The prompt image shows a black tab. If bg-score-unit.svg is the black shape, text should be white. */
+    color: white;
+    font-size: 29px;
+    font-weight: 700;
+    z-index: 5;
+    padding-left: 0;
+    padding-right: 5px;
+}
+
+/* Un-skew text in the tab - Removed */
+.scoreLabelTab span {
+    display: inline-block;
+}
+
+/* Rank Circle */
+.rankCircle {
+    position: absolute;
+    top: -25px;
+    right: -20px;
+    width: 60px;
+    height: 60px;
+    background: white;
+    border-radius: 50%;
+    color: black;
+    font-weight: 800;
+    font-size: 3.6rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 20;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    border: 4px solid black;
 }

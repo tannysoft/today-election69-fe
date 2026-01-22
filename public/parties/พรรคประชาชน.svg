@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 653.25 145.49">
+  <defs>
+    <style>
+      .cls-1 {
+        fill: #ff6412;
+      }
+
+      .cls-2 {
+        isolation: isolate;
+      }
+
+      .cls-3 {
+        fill: url(#linear-gradient-2);
+        opacity: .5;
+      }
+
+      .cls-4 {
+        opacity: .7;
+      }
+
+      .cls-5 {
+        fill: url(#linear-gradient);
+        mix-blend-mode: overlay;
+        opacity: .2;
+      }
+    </style>
+    <linearGradient id="linear-gradient" x1="75.39" y1="72.54" x2="268.51" y2="72.54" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#fff"/>
+      <stop offset=".25" stop-color="#fff" stop-opacity=".7"/>
+      <stop offset=".52" stop-color="#fff" stop-opacity=".4"/>
+      <stop offset=".74" stop-color="#fff" stop-opacity=".19"/>
+      <stop offset=".91" stop-color="#fff" stop-opacity=".05"/>
+      <stop offset="1" stop-color="#fff" stop-opacity="0"/>
+    </linearGradient>
+    <linearGradient id="linear-gradient-2" x1="0" xlink:href="#linear-gradient"/>
+  </defs>
+  <g class="cls-2">
+    <g id="Layer_2" data-name="Layer 2">
+      <g id="Layer_1-2" data-name="Layer 1">
+        <g>
+          <polygon class="cls-4" points="267.97 0 212.57 106.61 597.86 106.61 653.25 0 267.97 0"/>
+          <polygon class="cls-1" points="192.28 145.49 569.6 145.49 605.29 76.82 227.97 76.82 192.28 145.49"/>
+          <g>
+            <polygon class="cls-1" points="75.39 0 0 145.08 193.11 145.08 268.51 0 75.39 0"/>
+            <polygon class="cls-5" points="75.39 0 193.11 145.08 268.51 0 75.39 0"/>
+            <polygon class="cls-3" points="268.51 0 193.11 145.08 0 145.08 268.51 0"/>
+          </g>
+        </g>
+      </g>
+    </g>
+  </g>
+</svg>
