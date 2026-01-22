@@ -34,7 +34,7 @@ export async function getElectionData(limit = 3) {
                     firstName: c.firstName,
                     lastName: c.lastName,
                     party: c.expand?.party?.name || c.party || "",
-                    partyLogoUrl: c.expand?.party?.logoUrl || null,
+                    partyLogoUrl: c.expand?.party?.logoUrl ? pb.files.getUrl(c.expand.party, c.expand.party.logoUrl) : null,
                     score: c.totalVotes,
                     color: c.expand?.party?.color || c.color || 'orange', // Party color > Candidate color > Default
                     image: c.photoUrl || (c.image ? pb.files.getUrl(c, c.image) : null),

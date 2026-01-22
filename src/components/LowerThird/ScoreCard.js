@@ -40,7 +40,7 @@ export default function ScoreCard({ rank, name, title, firstName, lastName, part
     // Construct Image URL
     const imageUrl = (provinceId && areaNumber && candidateNumber && image)
         ? `https://files-election69.livetubex.com/candidates/${provinceId}/${areaNumber}/${candidateNumber}.png`
-        : (image ? image : null);
+        : (image ? image : (partyLogoUrl ? partyLogoUrl : null));
 
     // Handle Background Fallback
     useEffect(() => {
@@ -73,7 +73,11 @@ export default function ScoreCard({ rank, name, title, firstName, lastName, part
     return (
         <div
             className={`${styles.card} ${rank === 1 ? styles.rank1 : ''} ${rankPosition === 'bottom' ? styles.rankBottom : ''}`}
-            style={{ backgroundImage: bgUrl ? `url("${bgUrl}")` : 'none', animationDelay: `${(rank - 1) * 0.15 + 0.3}s` }}
+            style={{
+                backgroundImage: bgUrl ? `url("${bgUrl}")` : 'none',
+                backgroundRepeat: 'no-repeat',
+                animationDelay: `${(rank - 1) * 0.15 + 0.3}s`
+            }}
         >
             {/* Rank Badge - Top Right */}
             <div className={styles.rankCircle}>
