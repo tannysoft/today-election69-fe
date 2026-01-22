@@ -254,6 +254,8 @@
     z-index: 5;
     padding-left: 0;
     padding-right: 5px;
+    opacity: 0;
+    animation: fadeInRightText 0.5s ease-out forwards;
 }
 
 /* Un-skew text in the tab - Removed */

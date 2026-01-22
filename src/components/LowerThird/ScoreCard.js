@@ -136,7 +136,7 @@ export default function ScoreCard({ rank, name, title, firstName, lastName, part
                         </div>
 
                         {/* The "Score Label" Tab - Black slanted box on the right */}
-                        <div className={styles.scoreLabelTab}>
+                        <div className={styles.scoreLabelTab} style={{ animationDelay: `${((rank - 1) * 0.15) + 0.4}s` }}>
                             <span>คะแนน</span>
                         </div>
                     </div>
