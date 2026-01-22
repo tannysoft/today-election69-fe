@@ -12,11 +12,10 @@
 .studioBackground {}
 
 /* Header: Province & Zone */
-/* Header: Province & Zone */
 .headerArea {
     position: absolute;
-    top: 80px;
-    left: 100px;
+    top: 70px;
+    left: 130px;
     display: flex;
     align-items: center;
     gap: 20px;
@@ -52,7 +51,7 @@
 /* Main Board Area */
 .contentArea {
     position: absolute;
-    top: 200px;
+    top: 230px;
     left: 50%;
     transform: translateX(-50%);
     display: flex;
@@ -63,9 +62,9 @@
 
 /* Rank 1 Area */
 .rank1Area {
-    margin-bottom: 70px;
+    margin-bottom: 160px;
     /* Scale it up */
-    transform: scale(1.3);
+    transform: scale(1.7);
     transform-origin: center top;
     z-index: 10;
 }
@@ -76,8 +75,9 @@
     grid-template-columns: 1fr 1fr;
     gap: 75px 100px;
     /* Row Gap: 75px, Column Gap: 100px */
-    margin-top: 50px;
-    /* Adjust margin to account for Rank 1 scaling space */
+    margin-top: 20px;
+    transform: scale(1.3);
+    transform-origin: center top;
 }
 
 .gridItem {
