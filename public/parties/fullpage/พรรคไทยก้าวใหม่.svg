@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 700.15 145.08">
+  <defs>
+    <style>
+      .cls-1 {
+        fill: url(#linear-gradient-2);
+      }
+
+      .cls-2 {
+        fill: url(#linear-gradient);
+      }
+
+      .cls-3 {
+        isolation: isolate;
+      }
+
+      .cls-4 {
+        fill: url(#linear-gradient-4);
+        opacity: .5;
+      }
+
+      .cls-5 {
+        fill: url(#linear-gradient-3);
+        mix-blend-mode: overlay;
+        opacity: .2;
+      }
+    </style>
+    <linearGradient id="linear-gradient" x1="184.26" y1="72.54" x2="700.15" y2="72.54" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#ece659"/>
+      <stop offset=".12" stop-color="#c1bc55"/>
+      <stop offset=".31" stop-color="#817d50"/>
+      <stop offset=".47" stop-color="#53504d"/>
+      <stop offset=".59" stop-color="#36344a"/>
+      <stop offset=".66" stop-color="#2c2a4a"/>
+    </linearGradient>
+    <linearGradient id="linear-gradient-2" x1="0" x2="268.51" xlink:href="#linear-gradient"/>
+    <linearGradient id="linear-gradient-3" x1="75.39" y1="72.54" x2="268.51" y2="72.54" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#fff"/>
+      <stop offset=".25" stop-color="#fff" stop-opacity=".7"/>
+      <stop offset=".52" stop-color="#fff" stop-opacity=".4"/>
+      <stop offset=".74" stop-color="#fff" stop-opacity=".19"/>
+      <stop offset=".91" stop-color="#fff" stop-opacity=".05"/>
+      <stop offset="1" stop-color="#fff" stop-opacity="0"/>
+    </linearGradient>
+    <linearGradient id="linear-gradient-4" x1="0" xlink:href="#linear-gradient-3"/>
+  </defs>
+  <g class="cls-3">
+    <g id="Layer_2" data-name="Layer 2">
+      <g id="Layer_1-2" data-name="Layer 1">
+        <g>
+          <rect class="cls-2" x="184.26" width="515.89" height="145.08"/>
+          <g>
+            <polygon class="cls-1" points="75.39 0 0 145.08 193.11 145.08 268.51 0 75.39 0"/>
+            <polygon class="cls-5" points="75.39 0 193.11 145.08 268.51 0 75.39 0"/>
+            <polygon class="cls-4" points="268.51 0 193.11 145.08 0 145.08 268.51 0"/>
+          </g>
+        </g>
+      </g>
+    </g>
+  </g>
+</svg>
