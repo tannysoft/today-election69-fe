@@ -1,30 +1,89 @@
 .container {
     width: 1920px;
     height: 1080px;
-    overflow: hidden;
     position: relative;
-    background: var(--bg-studio, radial-gradient(circle at center, #1f2937 0%, #111827 100%));
-    /* Studio BG fallback */
-    display: flex;
+    overflow: hidden;
+    color: white;
+    font-family: var(--font-dbheavent);
+    padding: 60px;
+    /* Padding for content */
+    background: url('/bg-version2.png') no-repeat center center;
+    background-size: cover;
 }
 
-.leftTarget {
-    flex: 1;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    color: rgba(255, 255, 255, 0.2);
-    font-size: 2rem;
+/* Background Image can be added here if needed */
+.studioBackground {
+    background: url('/bg-area-name.png') center bottom / cover no-repeat;
+    /* or similar */
 }
 
-.sidebarArea {
-    width: 700px;
-    height: 100%;
-    /* background: rgba(0,0,0,0.5); */
-    /* Optional tint */
+.header {
+    position: absolute;
+    top: 50px;
+    left: 80px;
+    z-index: 10;
+}
+
+.title {
+    font-size: 5rem;
+    font-weight: 700;
+    line-height: 1.1;
+}
+
+.subtitle {
+    text-align: right;
+    font-size: 2.5rem;
+    line-height: 2rem;
+    color: #ffca28;
+    /* Yellow/Orange accent */
+    margin-top: 0;
+}
+
+.listContainer {
+    position: absolute;
+    top: 220px;
+    /* Start below header */
+    left: 80px;
     display: flex;
-    justify-content: center;
+    flex-direction: column;
+    gap: 20px;
+    /* Spacing between rows */
+}
+
+/* Wrapper to customize LowerThird appearance if needed */
+/* Wrapper for Sidebar Row */
+.rowWrapper {
+    position: relative;
+    display: flex;
     align-items: center;
-    padding-right: 50px;
-    /* Spacing from right edge */
+    margin-bottom: -15px;
+    /* Overlap/tighten rows */
+    height: 110px;
+    /* Fixed height slot */
+}
+
+/* External Sidebar Rank Style */
+.sidebarRank {
+    font-size: 3rem;
+    font-weight: 800;
+    color: white;
+    text-shadow: 3px 3px 6px rgba(0, 0, 0, 0.8);
+    margin-right: 0;
+    /* Overlap into the card slightly */
+    z-index: 20;
+    /* On top of card edge */
+    width: 60px;
+    text-align: right;
+    line-height: 1;
+    transform: translateY(15px);
+    /* Align visual baseline */
+}
+
+/* Wrapper to Scale Down ScoreCard */
+.cardScaleWrapper {
+    transform: scale(0.75);
+    /* Scale down to sidebar size */
+    transform-origin: left center;
+    margin-left: 20px;
+    /* ScoreCard is fixed width ~600px. Scaled 0.75 -> 450px */
 }

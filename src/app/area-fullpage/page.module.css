@@ -1,7 +1,8 @@
 .container {
     width: 1920px;
     height: 1080px;
-    background: transparent;
+    background: url('/bg-version1.png') no-repeat center center;
+    background-size: cover;
     /* Or studio background */
     position: relative;
     overflow: hidden;

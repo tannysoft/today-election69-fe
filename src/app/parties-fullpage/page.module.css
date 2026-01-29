@@ -5,18 +5,18 @@
     overflow: hidden;
     color: white;
     font-family: var(--font-dbheavent);
-    background: url('/bg-version2.png') no-repeat center center;
+    background: url('/bg-version1.png') no-repeat center center;
     background-size: cover;
 }
 
 .header {
     position: absolute;
-    top: 60px;
-    left: 85px;
+    top: 40px;
+    left: 60px;
+    font-size: 5rem;
+    font-weight: 700;
+    line-height: 1;
     z-index: 10;
-    display: flex;
-    flex-direction: column;
-    gap: 0;
 }
 
 .headerTitle {
@@ -28,13 +28,10 @@
 
 .headerStats {
     display: flex;
-    flex-direction: row;
-    /* Horizontal layout */
-    gap: 40px;
-    /* Space between the two stats */
-    margin-left: 258px;
-    align-items: center;
-    /* Align vertically */
+    flex-direction: column;
+    gap: 5px;
+    margin-left: 200px;
+    /* Indent as per design */
 }
 
 .statItem {
@@ -48,8 +45,7 @@
 .statLabel {
     color: white;
     font-weight: 500;
-    width: 250px;
-    /* Increased for longer text */
+    width: 120px;
     text-align: right;
 }
 
@@ -67,47 +63,45 @@
     /* Ensure number font is correct */
 }
 
-/* Rank Circle */
-.rankCircle {
+.gridContainer {
     position: absolute;
-    bottom: 0;
-    left: 20px;
-    top: auto;
-    right: auto;
-    width: auto;
-    height: auto;
-    background: transparent;
-    border: none;
-    border-radius: 0;
-    color: white;
-    font-weight: 800;
-    font-size: 5rem;
-    display: block;
-    z-index: 50;
-    text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.8);
-    box-shadow: none;
-    line-height: 3rem;
+    top: 150px;
+    /* Below header */
+    left: 50%;
+    transform: translateX(-50%);
+    width: 1540px;
+    /* Reduced specific width */
+    height: 800px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: repeat(5, 1fr);
+    column-gap: 50px;
+    row-gap: 30px;
 }
 
-/* Single Column List Layout */
-.partyListContainer {
+.footer {
     position: absolute;
-    top: 210px;
-    /* Pushed down to avoid overlap with header */
-    left: 100px;
-    display: flex;
-    flex-direction: column;
-    gap: 30px;
+    bottom: 40px;
+    right: 60px;
+    text-align: right;
+    font-size: 2rem;
+    font-weight: 500;
+    line-height: 1.2;
+    z-index: 10;
 }
 
+/* Duplicating PartyRow styles for consistency, scoped to this page */
 .partyRow {
     position: relative;
-    width: 700px;
-    /* Reduced to 730px */
+    width: 100%;
+    /* Fill grid cell */
     height: 140px;
+    /* Match height from single page */
     display: flex;
     align-items: center;
-    opacity: 0;
+    /* Scale down slightly if needed to fit 2 cols? 1800 / 2 = 900px. Card is ~730px. Plenty of space. */
+    transform: translateX(40px);
+    /* Center in column */
 }
 
 .rowBackground {
@@ -124,11 +118,9 @@
 
 .pmImageContainer {
     position: absolute;
-    left: 50px;
-    /* Adjust as needed */
+    left: 80px;
     bottom: -1px;
     width: 210px;
-    /* Slightly wider for group shot? */
     height: 120%;
     z-index: 10;
     pointer-events: none;
@@ -143,27 +135,21 @@
     object-fit: contain;
 }
 
-/* Card Content Area - Flex Column */
 .cardContent {
     position: relative;
     z-index: 20;
-    /* Higher than PM image (10) to overlap logo */
     display: flex;
     flex-direction: column;
     justify-content: center;
-    margin-left: 165px;
-    /* Space for PM image */
+    margin-left: 195px;
     width: 380px;
-    /* Reduced to fit in 730px (730 - 200 - 130 = 400 space) */
     height: 100%;
 }
 
-/* Wrapper for constraints */
 .nameWrapper {
     width: 290px;
     height: 60px;
     position: relative;
-    /* Anchor for absolute child */
     overflow: hidden;
     margin-right: 0;
     align-self: flex-end;
@@ -183,15 +169,12 @@
     line-height: 1;
     margin-bottom: 0;
     white-space: nowrap;
-    /* Transformation handled in JS */
 }
 
-/* Bottom Row: Logo + Score + Label */
 .mainStatsRow {
     display: flex;
     align-items: flex-end;
     justify-content: flex-end;
-    /* Align right to sit under Name? */
     gap: 5px;
 }
 
@@ -217,9 +200,8 @@
     font-weight: 900;
     line-height: 4rem;
     color: white;
-    min-width: 125px;
+    min-width: 108px;
     text-align: center;
-    margin-right: -5px;
     padding-left: 10px;
 }
 
@@ -227,18 +209,20 @@
     font-size: 2rem;
     font-weight: 500;
     color: white;
-    margin-bottom: -8px;
+    margin-bottom: -10px;
 }
 
-
-/* Breakdown Box */
 .breakdownContainer {
     position: absolute;
+    right: 170px;
+    /* Adjusted because grid column is wider? Or keep style? Original was right: 0 relative to 730px width. */
+    right: 60px;
+    /* Fit within 700px width? 700 - 130 = 570. Let's tweak */
     right: 0;
+    /* Align to right of container */
     top: 0;
     height: 100%;
     width: 130px;
-    /* Fixed width for the end cap */
     display: flex;
     flex-direction: column;
     z-index: 5;
@@ -246,7 +230,6 @@
 
 .breakdownRow {
     flex: 1;
-    /* Equal height split */
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -254,13 +237,11 @@
     line-height: 1;
 }
 
-/* First child (Party List) -> Black */
 .breakdownRow:first-child {
     background: black;
     color: white;
 }
 
-/* Second child (Constituency) -> Mint */
 .breakdownRow:last-child {
     background: #8ee9c1;
     color: black;
@@ -272,19 +253,38 @@
     line-height: 1.4rem;
     width: 100%;
     text-align: center;
-    /* Or top-left if requested, but center usually looks better */
     margin-bottom: 0px;
 }
 
 .bdValue {
     font-size: 3.5rem;
-    /* Big number */
     font-weight: 800;
 }
 
 .bdValue span {
     display: block;
     line-height: 2.5rem;
+}
+
+.rankCircle {
+    position: absolute;
+    bottom: 0;
+    left: 20px;
+    top: auto;
+    right: auto;
+    width: auto;
+    height: auto;
+    background: transparent;
+    border: none;
+    border-radius: 0;
+    color: white;
+    font-weight: 800;
+    font-size: 5rem;
+    display: block;
+    z-index: 50;
+    text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.8);
+    box-shadow: none;
+    line-height: 3rem;
 }
 
 /* Animations */
@@ -295,11 +295,14 @@
     }
 
     100% {
-        transform: translateX(0);
+        transform: translateX(40px);
+        /* Match the final position defined in .partyRow */
         opacity: 1;
     }
 }
 
 .slideIn {
     animation: slideInLeft 0.5s ease-out forwards;
+    opacity: 0;
+    /* Star hidden */
 }

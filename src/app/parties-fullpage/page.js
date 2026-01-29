@@ -1,11 +1,11 @@
 "use client";
 
 import { useState, useEffect, useRef } from 'react';
-import { getPartyListData, getTotalVotes } from '@/services/electionService';
+import { getPartyListData } from '@/services/electionService';
 import CountUp from 'react-countup';
 import styles from './page.module.css';
 
-// Sub-component for individual party row to handle refs/scaling
+// Sub-component for individual party row
 function PartyRow({ party, index, rank }) {
     const nameRef = useRef(null);
     const containerRef = useRef(null);
@@ -18,7 +18,7 @@ function PartyRow({ party, index, rank }) {
             if (textWidth > parentWidth) {
                 const scale = parentWidth / textWidth;
                 nameRef.current.style.transform = `scaleX(${scale})`;
-                nameRef.current.style.transformOrigin = 'right center'; // Align right
+                nameRef.current.style.transformOrigin = 'right center';
                 nameRef.current.style.width = `${textWidth}px`;
             } else {
                 nameRef.current.style.transform = 'none';
@@ -28,33 +28,25 @@ function PartyRow({ party, index, rank }) {
     };
 
     useEffect(() => {
-        // Immediate check
         checkScale();
-
-        // Re-check after small delays for font loading/layout settlement
         const timers = [
             setTimeout(checkScale, 50),
             setTimeout(checkScale, 500)
         ];
-
-        // Also try to listen for font ready if supported
         if (document.fonts) {
             document.fonts.ready.then(checkScale);
         }
-
         return () => timers.forEach(clearTimeout);
     }, [party.name]);
 
     return (
         <div
             className={`${styles.partyRow} ${styles.slideIn}`}
-            style={{ animationDelay: `${index * 0.15}s` }}
+            style={{ animationDelay: `${index * 0.05}s` }} /* Faster stagger for 10 items */
         >
             {/* Rank Badge */}
             <div className={styles.rankCircle}>{rank}</div>
 
-            {/* Background SVG */}
-            {/* ... */}
             <div
                 className={styles.rowBackground}
                 style={{
@@ -62,10 +54,9 @@ function PartyRow({ party, index, rank }) {
                 }}
             />
 
-            {/* PM Candidates Image (Single Group) */}
             <div
                 className={styles.pmImageContainer}
-                style={party.name === 'พรรคเพื่อไทย' ? { left: '70px' } : {}}
+                style={party.name === 'พรรคเพื่อไทย' ? { left: '100px' } : {}}
             >
                 <img
                     src={`/pm-candidates-group/${party.name}.png`}
@@ -76,26 +67,21 @@ function PartyRow({ party, index, rank }) {
                 />
             </div>
 
-            {/* Card Content Area */}
             <div className={styles.cardContent}>
-                {/* Top Row: Party Name */}
-                {/* Wrap in container for width limit */}
+                {/* Party Name */}
                 <div className={styles.nameWrapper} ref={containerRef}>
-                    <div className={styles.partyName} ref={nameRef} style={{ whiteSpace: 'nowrap', display: 'inline-block' }}>
+                    <div className={styles.partyName} ref={nameRef}>
                         {party.name}
                     </div>
                 </div>
 
-                {/* Bottom Row: Logo + Score + Label */}
+                {/* Stats Row */}
                 <div className={styles.mainStatsRow}>
-                    {/* Logo */}
                     {party.logoUrl && (
                         <div className={styles.logoContainer}>
                             <img src={party.logoUrl} alt={party.name} />
                         </div>
                     )}
-
-                    {/* Total Score */}
                     <div className={styles.totalNumber}>
                         <CountUp end={party.count} duration={1} />
                     </div>
@@ -103,7 +89,6 @@ function PartyRow({ party, index, rank }) {
                 </div>
             </div>
 
-            {/* Breakdown Stats (Absolute Right) */}
             <div className={styles.breakdownContainer}>
                 <div className={styles.breakdownRow}>
                     <span className={styles.bdLabel}>บัญชีรายชื่อ</span>
@@ -118,29 +103,23 @@ function PartyRow({ party, index, rank }) {
                     </span>
                 </div>
             </div>
-
         </div>
     );
 }
 
-export default function PartiesPage() {
+export default function PartiesFullPage() {
     const [parties, setParties] = useState([]);
-    const [totalVotes, setTotalVotes] = useState({ partyListTotal: 0, constituencyTotal: 0 });
     const [currentIndex, setCurrentIndex] = useState(0);
 
     const fetchData = async () => {
-        const [partiesData, votesData] = await Promise.all([
-            getPartyListData(),
-            getTotalVotes()
-        ]);
-        setParties(partiesData.filter(p => p.count > 0));
-        setTotalVotes(votesData);
+        const data = await getPartyListData();
+        setParties(data.filter(p => p.count > 0)); // Fetch all valid
     };
 
     useEffect(() => {
         fetchData();
-        // ... polling logic
-        const interval = setInterval(fetchData, 10000); // Polling added explicitly just in case
+        // Polling if needed
+        const interval = setInterval(fetchData, 10000);
         return () => clearInterval(interval);
     }, []);
 
@@ -149,7 +128,7 @@ export default function PartiesPage() {
         if (parties.length === 0) return;
         const interval = setInterval(() => {
             setCurrentIndex(prev => {
-                const maxIndex = Math.ceil(parties.length / 5);
+                const maxIndex = Math.ceil(parties.length / 10);
                 return (prev + 1) % maxIndex;
             });
         }, 10000); // 10 seconds
@@ -157,32 +136,29 @@ export default function PartiesPage() {
         return () => clearInterval(interval);
     }, [parties.length]);
 
-    const visibleParties = parties.slice(currentIndex * 5, (currentIndex + 1) * 5);
+    // Provide some totals for footer if needed (mock or calculate)
+    const totalPartyList = parties.reduce((acc, p) => acc + (p.partyListSeats || 0), 0);
+    const totalConstituency = parties.reduce((acc, p) => acc + (p.constituencySeats || 0), 0);
+
+    const visibleParties = parties.slice(currentIndex * 10, (currentIndex + 1) * 10);
 
     return (
-        <div className={`${styles.container} ${styles.studioBackground}`}>
-            <div className={styles.header}>
-                <div className={styles.headerTitle}>รวมจำนวน ส.ส.</div>
-                <div className={styles.headerStats}>
-                    <div className={styles.statItem}>
-                        <span className={styles.statLabel}>บัญชีรายชื่อและเขต</span>
-                        <span className={styles.statLabelSmall}>นับแล้ว</span>
-                        <span className={styles.statValue}>
-                            <CountUp end={totalVotes.partyListTotal + totalVotes.constituencyTotal} separator="," duration={1} />
-                        </span>
-                    </div>
-                </div>
-            </div>
+        <div className={styles.container}>
+            <div className={styles.header}>รวมจำนวน ส.ส.</div>
 
-            <div className={styles.partyListContainer} key={currentIndex}>
+            <div className={styles.gridContainer} key={currentIndex}>
                 {visibleParties.map((party, index) => (
                     <PartyRow
                         key={party.name}
                         party={party}
                         index={index}
-                        rank={(currentIndex * 5) + index + 1}
+                        rank={(currentIndex * 10) + index + 1}
                     />
                 ))}
+            </div>
+
+            <div className={styles.footer}>
+                นับแล้ว {totalPartyList.toLocaleString()}
             </div>
         </div>
     );

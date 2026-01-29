@@ -4,7 +4,7 @@ import styles from "./page.module.css";
 export default function Home() {
   const links = [
     {
-      href: "/area",
+      href: "/area-lowerthird",
       title: "Area (Lower Third)",
       description: "Default lower-third view for area election results."
     },
@@ -17,6 +17,11 @@ export default function Home() {
       href: "/parties",
       title: "Parties",
       description: "Sidebar view showing total seats per party."
+    },
+    {
+      href: "/parties-seats",
+      title: "Parties (Seats)",
+      description: "Ranked list of parties by constituency seats."
     },
     {
       href: "/partylist",

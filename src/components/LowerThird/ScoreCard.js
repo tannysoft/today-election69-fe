@@ -3,7 +3,7 @@ import { useState, useEffect, useRef } from 'react';
 import CountUp from 'react-countup';
 import styles from './LowerThird.module.css';
 
-export default function ScoreCard({ rank, name, title, firstName, lastName, party, partyLogoUrl, score, color, image, rankPosition = 'top', provinceId, areaNumber, candidateNumber }) {
+export default function ScoreCard({ rank, name, title, firstName, lastName, party, partyLogoUrl, score, color, image, rankPosition = 'top', provinceId, areaNumber, candidateNumber, hidePartyLabel = false, imageCentered = false, nameFontSize = null }) {
     const [bgUrl, setBgUrl] = useState(null);
     const nameRef = useRef(null);
     const nameContainerRef = useRef(null);
@@ -38,9 +38,23 @@ export default function ScoreCard({ rank, name, title, firstName, lastName, part
     }, [displayName]);
 
     // Construct Image URL
-    const imageUrl = (provinceId && areaNumber && candidateNumber && image)
-        ? `https://files-election69.livetubex.com/candidates/${provinceId}/${areaNumber}/${candidateNumber}.png`
-        : (image ? image : (partyLogoUrl ? partyLogoUrl : null));
+    // Construct Image URL
+    const [finalImageUrl, setFinalImageUrl] = useState(null);
+
+    useEffect(() => {
+        const url = (provinceId && areaNumber && candidateNumber && image)
+            ? `https://files-election69.livetubex.com/candidates/${provinceId}/${areaNumber}/${candidateNumber}.png`
+            : (image ? image : (partyLogoUrl ? partyLogoUrl : null));
+
+        if (url) {
+            const img = new Image();
+            img.src = url;
+            img.onload = () => setFinalImageUrl(url);
+            img.onerror = () => setFinalImageUrl(null); // Hide if fail
+        } else {
+            setFinalImageUrl(null);
+        }
+    }, [provinceId, areaNumber, candidateNumber, image, partyLogoUrl]);
 
     // Handle Background Fallback
     useEffect(() => {
@@ -48,11 +62,11 @@ export default function ScoreCard({ rank, name, title, firstName, lastName, part
             setBgUrl(null);
             return;
         }
-        const targetUrl = `/parties/${party}.svg`;
+        const targetUrl = `/parties/lowerthird/${party}.svg`;
         const img = new Image();
         img.src = targetUrl;
         img.onload = () => setBgUrl(targetUrl);
-        img.onerror = () => setBgUrl('/parties/default.svg');
+        img.onerror = () => setBgUrl('/parties/lowerthird/default.svg');
     }, [party]);
 
     const isHex = color?.startsWith('#');
@@ -68,19 +82,21 @@ export default function ScoreCard({ rank, name, title, firstName, lastName, part
             }}
         >
             {/* Rank Badge - Top Right */}
-            <div className={styles.rankCircle}>
-                {rankPosition === 'bottom' ? `อันดับที่ ${rank}` : rank}
-            </div>
+            {rank !== null && (
+                <div className={styles.rankCircle}>
+                    {rankPosition === 'bottom' ? `อันดับที่ ${rank}` : rank}
+                </div>
+            )}
 
             {/* Portrait - Left, overlapping both rows */}
             <div className={styles.portraitCircle}>
-                {imageUrl ? (
+                {finalImageUrl ? (
                     <img
-                        src={imageUrl}
+                        src={finalImageUrl}
                         alt={name}
                         className={styles.portraitImage}
                         style={{
-                            objectPosition: 'center 10px',
+                            objectPosition: imageCentered ? 'center center' : 'center 10px',
                         }}
                     />
                 ) : (
@@ -111,12 +127,13 @@ export default function ScoreCard({ rank, name, title, firstName, lastName, part
                             style={{
                                 animationDelay: `${((rank - 1) * 0.15) + 0.6}s`,
                                 display: 'inline-block',
-                                whiteSpace: 'nowrap'
+                                whiteSpace: 'nowrap',
+                                fontSize: nameFontSize || undefined // Apply font size override
                             }}
                         >
                             {displayName}
                         </div>
-                        <div className={styles.party} style={{ animationDelay: `${((rank - 1) * 0.15) + 0.7}s` }}>{party}</div>
+                        {!hidePartyLabel && <div className={styles.party} style={{ animationDelay: `${((rank - 1) * 0.15) + 0.7}s` }}>{party}</div>}
                     </div>
                 </div>
 

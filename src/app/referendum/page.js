@@ -12,6 +12,8 @@ export default function ReferendumPage() {
         approve: 0,
         disapprove: 0,
         no_vote: 0,
+        bad_cards: 0,
+        total_counted: 0,
         title: ""
     });
 
@@ -35,6 +37,8 @@ export default function ReferendumPage() {
                         approve: e.record.agreeTotalVotes || 0,
                         disapprove: e.record.disagreeTotalVotes || 0,
                         no_vote: e.record.noVotes || 0,
+                        bad_cards: e.record.invalidVotes || 0,
+                        total_counted: e.record.totalVotes || 0,
                         title: e.record.title || ""
                     });
                 }
@@ -77,6 +81,8 @@ export default function ReferendumPage() {
                     approve={data.approve}
                     disapprove={data.disapprove}
                     noVote={data.no_vote}
+                    badCards={data.bad_cards}
+                    totalCounted={data.total_counted}
                     title={data.title}
                 />
             </div>

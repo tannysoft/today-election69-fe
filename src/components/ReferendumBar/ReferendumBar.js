@@ -3,66 +3,72 @@ import React from 'react';
 import CountUp from 'react-countup';
 import styles from './ReferendumBar.module.css';
 
-const ThumbsUpIcon = () => (
-    <svg viewBox="0 0 24 24">
-        <path d="M1 21h4V9H1v12zm22-11c0-1.1-.9-2-2-2h-6.31l.95-4.57.03-.32c0-.41-.17-.79-.44-1.06L14.17 1 7.59 7.59C7.22 7.95 7 8.45 7 9v10c0 1.1.9 2 2 2h9c.83 0 1.54-.5 2.14-1.17l3.07-7.22c.11-.26.19-.55.19-.85V10z" />
-    </svg>
-);
-
-const ThumbsDownIcon = () => (
-    <svg viewBox="0 0 24 24">
-        <path d="M15 3H6c-.83 0-1.54.5-2.14 1.17l-3.07 7.22c-.11.26-.19.55-.19.85v1c0 1.1.9 2 2 2h6.31l-.95 4.57-.03.32c0 .41.17.79.44 1.06L9.83 23l6.59-6.59c.36-.36.58-.86.58-1.41V5c0-1.1-.9-2-2-2zm4 0v12h4V3h-4z" />
-    </svg>
-);
-
-export default function ReferendumBar({ approve, disapprove, noVote, title }) {
+export default function ReferendumBar({ approve, disapprove, noVote, badCards, totalCounted, title }) {
     const renderScore = (value) => {
-        return value > 0 ? <CountUp end={value} separator="," duration={2} /> : null;
+        return <CountUp end={value || 0} separator="," duration={2} />;
     };
+
+    const totalVotes = (approve || 0) + (disapprove || 0);
+    const approvePercent = totalVotes > 0 ? ((approve || 0) / totalVotes) * 100 : 0;
+    const disapprovePercent = totalVotes > 0 ? ((disapprove || 0) / totalVotes) * 100 : 0;
 
     return (
         <div className={styles.container}>
-            {/* Main White Bar */}
-            <div className={styles.mainBar}>
-                {/* Left Absolute Icon */}
-                <div className={`${styles.iconCircle} ${styles.iconLeft}`}>
-                    <div className={styles.icon}>
-                        <ThumbsUpIcon />
+            {/* Top Row: Two main blocks */}
+            <div className={styles.topRow}>
+                {/* Agree Section (Left) */}
+                <div className={styles.agreeContainer}>
+                    <div className={styles.iconBoxAgree}>
+                        <img src="/referendum/agree.svg" alt="Agree" className={styles.iconImg} />
+                    </div>
+                    {/* Content Column: Text Above + Grey Bar Below */}
+                    <div className={styles.contentColumn}>
+                        <div className={styles.textRow}>
+                            <div className={styles.label}>เห็นชอบ</div>
+                            <div className={styles.scoreBox}>
+                                {renderScore(approve)}
+                            </div>
+                        </div>
+                        <div className={styles.greyBar}>
+                            <div className={styles.barFillAgree} style={{ width: `${approvePercent}%` }}></div>
+                        </div>
                     </div>
                 </div>
 
-                {/* Left Content */}
-                <div className={styles.leftSection}>
-                    <div className={`${styles.score} ${styles.scoreBlack}`}>
-                        {renderScore(approve)}
+                {/* Disagree Section (Right) */}
+                <div className={styles.disagreeContainer}>
+                    <div className={styles.contentColumn}>
+                        <div className={`${styles.textRow} ${styles.textRowRight}`}>
+                            <div className={styles.scoreBox}>
+                                {renderScore(disapprove)}
+                            </div>
+                            <div className={styles.label}>ไม่เห็นชอบ</div>
+                        </div>
+                        <div className={styles.greyBar}>
+                            <div className={styles.barFillDisagree} style={{ width: `${disapprovePercent}%` }}></div>
+                        </div>
                     </div>
-                    <div className={styles.label}>เห็นชอบ</div>
-                </div>
-
-                {/* Vertical Divider */}
-                <div className={styles.divider}></div>
-
-                {/* Right Content */}
-                <div className={styles.rightSection}>
-                    <div className={styles.label}>ไม่เห็นชอบ</div>
-                    <div className={`${styles.score} ${styles.scoreBlack}`}>
-                        {renderScore(disapprove)}
-                    </div>
-                </div>
-
-                {/* Right Absolute Icon */}
-                <div className={`${styles.iconCircle} ${styles.iconRight}`}>
-                    <div className={styles.icon}>
-                        <ThumbsDownIcon />
+                    <div className={styles.iconBoxDisagree}>
+                        <img src="/referendum/disagree.svg" alt="Disagree" className={styles.iconImg} />
                     </div>
                 </div>
             </div>
 
-            {/* Bottom Bar: No Vote */}
-            <div className={styles.abstainBar}>
-                <span className={styles.abstainLabel}>ไม่ประสงค์ลงคะแนน</span>
-                <div className={styles.abstainScoreBox}>
-                    {renderScore(noVote)}
+            {/* Bottom Bar: 3 Stats */}
+            <div className={styles.bottomBar}>
+                <div className={styles.bottomItem}>
+                    <span className={styles.bottomLabel}>ไม่ประสงค์ลงคะแนน</span>
+                    <div className={styles.bottomValueBox}>{renderScore(noVote)}</div>
+                </div>
+
+                <div className={styles.bottomItem}>
+                    <span className={styles.bottomLabel}>บัตรเสีย</span>
+                    <div className={styles.bottomValueBox}>{renderScore(badCards)}</div>
+                </div>
+
+                <div className={styles.bottomItem}>
+                    <span className={styles.bottomLabel}>นับแล้ว</span>
+                    <div className={styles.bottomValueBox}>{renderScore(totalCounted)}</div>
                 </div>
             </div>
         </div>

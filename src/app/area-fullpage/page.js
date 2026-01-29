@@ -107,7 +107,7 @@ export default function AreaFullPage() {
                 setCurrentIndex((prev) => (prev + 1) % filteredAreas.length);
                 setIsVisible(true);
             }, 500);
-        }, 5000);
+        }, 10000);
         return () => clearInterval(loopInterval);
     }, [filteredAreas]);
 

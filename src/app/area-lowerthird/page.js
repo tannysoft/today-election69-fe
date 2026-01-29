@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useMemo } from 'react';
 import LowerThird from '@/components/LowerThird/LowerThird';
-import { getElectionData } from '@/services/electionService';
+import { getElectionData, getCandidatesForArea } from '@/services/electionService';
 import { getSettings } from '@/services/settingsService';
 import pb from '@/lib/pocketbase';
 import styles from './page.module.css';
@@ -43,28 +43,17 @@ export default function AreaPage() {
         fetchData();
 
         // Realtime Subscription: Candidates
-        pb.collection('candidates').subscribe('*', function (e) {
+        pb.collection('candidates').subscribe('*', async function (e) {
             if (e.action === 'update') {
+                // Fetch the latest sorted candidates for this area from the server
+                // This ensures we rely on the DB for sorting
+                const updatedCandidates = await getCandidatesForArea(e.record.area);
+
                 setAllAreas(prevAreas => {
                     return prevAreas.map(area => {
                         if (area.id !== e.record.area) return area;
-
-                        // Update Candidate Score
-                        const updatedCandidates = area.candidates.map(c => {
-                            if (c.id === e.record.id) {
-                                return { ...c, score: e.record.totalVotes };
-                            }
-                            return c;
-                        });
-
-                        // Re-sort and Re-rank
-                        updatedCandidates.sort((a, b) => b.score - a.score);
-                        const reRankedCandidates = updatedCandidates.map((c, index) => ({
-                            ...c,
-                            rank: index + 1
-                        }));
-
-                        return { ...area, candidates: reRankedCandidates };
+                        // Replace candidates with the fresh sorted list from DB
+                        return { ...area, candidates: updatedCandidates };
                     });
                 });
             }
@@ -159,7 +148,7 @@ export default function AreaPage() {
                 setIsExiting(false);
             }, 500); // 0.5s duration to match CSS
 
-        }, 5000); // 5 seconds per area (including transition)
+        }, 10000); // 10 seconds per area (including transition)
 
         return () => clearInterval(loopInterval);
     }, [filteredAreas]);

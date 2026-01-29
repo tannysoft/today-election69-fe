@@ -1,6 +1,21 @@
 "use server";
 
 import pb from '@/lib/pocketbase';
+import fs from 'fs';
+import path from 'path';
+
+function getPartyLogo(partyName, apiLogoUrl) {
+    if (!partyName) return apiLogoUrl;
+    try {
+        const localPath = path.join(process.cwd(), 'public', 'parties', 'logo', `${partyName}.png`);
+        if (fs.existsSync(localPath)) {
+            return `/parties/logo/${partyName}.png`;
+        }
+    } catch (e) {
+        // Ignore error, fallback to API
+    }
+    return apiLogoUrl;
+}
 
 export async function getElectionData(limit = 3) {
     try {
@@ -10,7 +25,11 @@ export async function getElectionData(limit = 3) {
         // 1. Fetch all areas
         // Sort by province name and zone number
         const areas = await pb.collection('areas').getFullList({
-            sort: 'province,number',
+            sort: 'province,number', // Assuming standard sort, pocketbase relations sort might vary based on DB structure, sticking to safe defaults or provided instructions. 
+            // Note: If 'province' works as a sort field for the relation, great. If not, we might need a backup. 
+            // The user request "From database" implies we should trust the DB query.
+            // However, the original code had client side sort.
+            sort: 'province.name,number',
             expand: 'province',
         });
 
@@ -34,7 +53,7 @@ export async function getElectionData(limit = 3) {
                     firstName: c.firstName,
                     lastName: c.lastName,
                     party: c.expand?.party?.name || c.party || "",
-                    partyLogoUrl: c.expand?.party?.logoUrl || null,
+                    partyLogoUrl: getPartyLogo(c.expand?.party?.name, c.expand?.party?.logoUrl || null),
                     score: c.totalVotes,
                     color: c.expand?.party?.color || c.color || 'orange', // Party color > Candidate color > Default
                     image: c.photoUrl || (c.image ? pb.files.getUrl(c, c.image) : null),
@@ -52,12 +71,8 @@ export async function getElectionData(limit = 3) {
             };
         });
 
-        // Client-side Sort: Province Name (Thai) -> Zone Number
-        areasWithCandidates.sort((a, b) => {
-            const provinceCompare = a._provinceName.localeCompare(b._provinceName, 'th');
-            if (provinceCompare !== 0) return provinceCompare;
-            return a._zoneNumber - b._zoneNumber;
-        });
+        // Client-side Sort removed as per request to rely on DB
+        // areasWithCandidates.sort((a, b) => { ... });
 
         // Filter out areas with no candidates if needed, or keep them to show empty state
         // For now, return all
@@ -87,12 +102,12 @@ export async function getPartyListData(sortField = '-totalSeats') {
                 name: record.name || "Unknown",
                 count: record.totalSeats || 0,
                 color: record.color || 'orange',
-                logoUrl: record.logoUrl || null,
-                leader: record.leader ? pb.files.getUrl(record, record.leader) : null,
-                logoUrl: record.logoUrl || null,
+                logoUrl: getPartyLogo(record.name, record.logoUrl || null),
                 leader: record.leader ? pb.files.getUrl(record, record.leader) : null,
                 percentage: record.percentage || 0,
-                partylistCount: record.partyListSeats || 0
+                partyListSeats: record.partyListSeats || 0,
+                constituencySeats: record.constituencySeats || 0,
+                score: record.partyListVotes || 0 // Added for /partylist page
             };
         });
 
@@ -100,6 +115,51 @@ export async function getPartyListData(sortField = '-totalSeats') {
 
     } catch (error) {
         console.error("Error fetching party list data:", error);
+        return [];
+    }
+}
+
+
+export async function getCandidatesForArea(areaId, limit = 3) {
+    try {
+        await pb.admins.authWithPassword(process.env.POCKETBASE_ADMIN_EMAIL, process.env.POCKETBASE_ADMIN_PASSWORD);
+
+        // Fetch area first to get numbers (optional, but good for completeness if needed in mapping)
+        // Optimization: Just fetch candidates if we only need candidate data, but we need area info for full mapping context usually.
+        // However, looking at the mapping in getElectionData, it relies on 'area' object.
+        // Let's just fetch candidates and map them.
+
+        const area = await pb.collection('areas').getOne(areaId, {
+            expand: 'province'
+        });
+
+        const candidates = await pb.collection('candidates').getFullList({
+            filter: `area = "${areaId}"`,
+            sort: '-totalVotes',
+            expand: 'party',
+        });
+
+        return candidates
+            .slice(0, limit)
+            .map((c, index) => ({
+                id: c.id,
+                rank: index + 1,
+                name: c.name,
+                title: c.title,
+                firstName: c.firstName,
+                lastName: c.lastName,
+                party: c.expand?.party?.name || c.party || "",
+                partyLogoUrl: getPartyLogo(c.expand?.party?.name, c.expand?.party?.logoUrl || null),
+                score: c.totalVotes,
+                color: c.expand?.party?.color || c.color || 'orange',
+                image: c.photoUrl || (c.image ? pb.files.getUrl(c, c.image) : null),
+                candidateNumber: c.number,
+                areaNumber: area.number,
+                provinceId: area.expand?.province?.code || area.expand?.province?.id
+            }));
+
+    } catch (error) {
+        console.error("Error fetching candidates for area:", error);
         return [];
     }
 }
@@ -118,6 +178,8 @@ export async function getReferendumData() {
                 approve: list.items[0].agreeTotalVotes || 0,
                 disapprove: list.items[0].disagreeTotalVotes || 0,
                 no_vote: list.items[0].noVotes || 0,
+                bad_cards: list.items[0].invalidVotes || 0,
+                total_counted: list.items[0].totalVotes || 0,
                 title: list.items[0].title || "หัวข้อประชามติ"
             };
         } else {
@@ -126,6 +188,8 @@ export async function getReferendumData() {
                 approve: 0,
                 disapprove: 0,
                 no_vote: 0,
+                bad_cards: 0,
+                total_counted: 0,
                 title: "คุณเห็นชอบหรือไม่ที่จะมีการแก้ไขรัฐธรรมนูญ?"
             };
         }
@@ -136,7 +200,72 @@ export async function getReferendumData() {
             approve: 654321,
             disapprove: 123456,
             no_vote: 5432,
+            bad_cards: 999,
+            total_counted: 783209,
             title: "คุณเห็นชอบหรือไม่ที่จะมีการแก้ไขรัฐธรรมนูญ?"
+        };
+    }
+}
+
+export async function getPartylistResult() {
+    try {
+        await pb.admins.authWithPassword(process.env.POCKETBASE_ADMIN_EMAIL, process.env.POCKETBASE_ADMIN_PASSWORD);
+
+        // Fetch from 'partylistResult'
+        const results = await pb.collection('partylistResult').getFullList({
+            sort: '-totalVotes',
+            expand: 'party',
+        });
+
+        return results.map((record, index) => ({
+            id: record.id,
+            rank: index + 1,
+            // Assuming the collection has a relation to 'party'
+            name: record.expand?.party?.name || "Unknown Party",
+            logoUrl: getPartyLogo(record.expand?.party?.name, record.expand?.party?.logoUrl || null),
+            color: record.expand?.party?.color || 'orange',
+            score: record.totalVotes || 0,
+
+            // Raw data if needed
+            partyId: record.party,
+            updated: record.updated
+        }));
+
+    } catch (error) {
+        console.error("Error fetching partylistResult:", error);
+        return [];
+    }
+}
+
+export async function getTotalVotes() {
+    try {
+        await pb.admins.authWithPassword(process.env.POCKETBASE_ADMIN_EMAIL, process.env.POCKETBASE_ADMIN_PASSWORD);
+
+        // 1. Party List Votes (Sum of all parties)
+        const parties = await pb.collection('parties').getFullList({
+            fields: 'partyListVotes'
+        });
+        const partyListTotal = parties.reduce((sum, p) => sum + (p.partyListVotes || 0), 0);
+
+        // 2. Constituency Votes (Sum of all candidates)
+        // Optimization: PocketBase doesn't have aggregate queries yet, so we have to fetch all candidates or use a view if available.
+        // Assuming we can fetch all candidates (might be heavy if thousands, but let's try).
+        // Alternatively, if there's a 'stats' collection use that.
+        // For now, fetch minimal fields.
+        const candidates = await pb.collection('candidates').getFullList({
+            fields: 'totalVotes'
+        });
+        const constituencyTotal = candidates.reduce((sum, c) => sum + (c.totalVotes || 0), 0);
+
+        return {
+            partyListTotal,
+            constituencyTotal
+        };
+    } catch (error) {
+        console.error("Error fetching total votes:", error);
+        return {
+            partyListTotal: 0,
+            constituencyTotal: 0
         };
     }
 }

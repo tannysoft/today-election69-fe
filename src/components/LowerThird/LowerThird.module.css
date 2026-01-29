@@ -93,6 +93,7 @@
     padding: 0 40px;
     margin-bottom: 5px;
     z-index: 2;
+    background-repeat: no-repeat;
 }
 
 .barContainer {
@@ -191,7 +192,7 @@
     /* Slightly larger? */
     height: 45px;
     border-radius: 50%;
-    border: 2px solid white;
+    border: 1px solid white;
     background: white;
     object-fit: contain;
     z-index: 50;
@@ -251,9 +252,9 @@
 /* Score Label Tab (Black Slanted on Right) - Removed skew/clip-path for flat design */
 .scoreLabelTab {
     position: absolute;
-    right: 10px;
+    right: 0;
     /* Adjusting position */
-    bottom: 4px;
+    bottom: 4.5px;
     width: 113px;
     height: 41px;
     background: url('/bg-score-unit.svg') center center / contain no-repeat;
@@ -284,19 +285,21 @@
 /* Rank Circle */
 .rankCircle {
     position: absolute;
-    top: -25px;
-    right: -20px;
-    width: 60px;
-    height: 60px;
-    background: white;
-    border-radius: 50%;
-    color: black;
+    bottom: -13px;
+    left: 25px;
+    top: auto;
+    right: auto;
+    width: auto;
+    height: auto;
+    background: transparent;
+    border: none;
+    border-radius: 0;
+    color: white;
     font-weight: 800;
-    font-size: 3.6rem;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 20;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
-    border: 4px solid black;
+    font-size: 5rem;
+    display: block;
+    z-index: 50;
+    text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.8);
+    box-shadow: none;
+    line-height: 1;
 }
