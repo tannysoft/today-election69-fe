@@ -6,9 +6,6 @@
     color: white;
     font-family: var(--font-dbheavent);
     padding: 60px;
-    /* Padding for content */
-    background: url('/bg-version2.png') no-repeat center center;
-    background-size: cover;
 }
 
 /* Background Image can be added here if needed */
