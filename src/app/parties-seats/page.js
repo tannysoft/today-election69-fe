@@ -1,11 +1,14 @@
 "use client";
 
 import { useState, useEffect, useRef } from 'react';
-import { getPartyListData, getTotalVotes } from '@/services/electionService';
+import { getPartyListData, getNationalTotal } from '@/services/electionService';
+import { getSettings } from '@/services/settingsService';
+import pb from '@/lib/pocketbase';
 import CountUp from 'react-countup';
 import styles from './page.module.css';
 
 function PartySeatCard({ party, index, rank }) {
+    // ... (unchanged)
     const [bgUrl, setBgUrl] = useState(null);
 
     // Load background SVG logic copied from ScoreCard
@@ -28,7 +31,7 @@ function PartySeatCard({ party, index, rank }) {
                 animationDelay: `${index * 0.1}s`,
                 backgroundImage: bgUrl ? `url("${bgUrl}")` : 'none',
                 backgroundRepeat: 'no-repeat',
-                backgroundSize: 'contain' // ScoreCard uses bgUrl? 'url("...")' : 'none' usually.
+                backgroundSize: 'contain'
             }}
         >
             {/* Rank - Position adjusted in CSS to match visual */}
@@ -79,29 +82,91 @@ function PartySeatCard({ party, index, rank }) {
 
 export default function PartiesSeatsPage() {
     const [parties, setParties] = useState([]);
-    const [totalVotes, setTotalVotes] = useState(0);
+    const [countedData, setCountedData] = useState({ totalVotes: 0, percent: 0 });
     const [currentIndex, setCurrentIndex] = useState(0);
+    const [viewMode, setViewMode] = useState('auto'); // auto, manual
+    const [manualIndex, setManualIndex] = useState(0);
+    const [countDisplayMode, setCountDisplayMode] = useState('votes');
 
     const fetchData = async () => {
-        const [partiesData, votesData] = await Promise.all([
+        const [partiesData, nationalData] = await Promise.all([
             getPartyListData('-constituencySeats'),
-            getTotalVotes()
+            getNationalTotal()
         ]);
 
         // Filter parties with >0 seats
         setParties(partiesData.filter(p => p.constituencySeats > 0));
-        setTotalVotes(votesData.constituencyTotal);
+        setCountedData({
+            totalVotes: nationalData.totalVotes,
+            percent: nationalData.percent
+        });
     };
 
     useEffect(() => {
         fetchData();
+
+        // Fetch initial settings
+        getSettings().then(settings => {
+            if (settings) {
+                const mode = settings.party_seats_mode || 'auto';
+                const idx = Number(settings.party_seats_index) || 0;
+                const cMode = settings.count_display_mode || 'votes';
+
+                setViewMode(mode);
+                setManualIndex(idx);
+                setCountDisplayMode(cMode);
+
+                if (mode === 'manual') setCurrentIndex(idx);
+            }
+        });
+
+        // Realtime Settings Subscription
+        const subSettings = pb.collection('settings').subscribe('*', (e) => {
+            if (e.action === 'update' || e.action === 'create') {
+                const s = e.record;
+                const newMode = s.party_seats_mode || 'auto';
+                const newIndex = Number(s.party_seats_index) || 0;
+                const newCountMode = s.count_display_mode || 'votes';
+
+                setViewMode(newMode);
+                setManualIndex(newIndex);
+                setCountDisplayMode(newCountMode);
+
+                if (newMode === 'manual') {
+                    setCurrentIndex(newIndex);
+                }
+            }
+        });
+
+        // Realtime National Subscription
+        const subNational = pb.collection('national').subscribe('*', async () => {
+            const data = await getNationalTotal();
+            setCountedData({
+                totalVotes: data.totalVotes,
+                percent: data.percent
+            });
+        });
+
         const interval = setInterval(fetchData, 10000);
-        return () => clearInterval(interval);
+        return () => {
+            clearInterval(interval);
+            subSettings.then(unsubscribe => unsubscribe && unsubscribe());
+            subNational.then(unsubscribe => unsubscribe && unsubscribe());
+            pb.collection('settings').unsubscribe('*');
+            pb.collection('national').unsubscribe('*');
+        };
     }, []);
 
     // Loop Effect
     useEffect(() => {
         if (parties.length === 0) return;
+
+        // Manual Mode
+        if (viewMode === 'manual') {
+            setCurrentIndex(manualIndex);
+            return;
+        }
+
         const interval = setInterval(() => {
             setCurrentIndex(prev => {
                 const maxIndex = Math.ceil(parties.length / 7);
@@ -110,16 +175,23 @@ export default function PartiesSeatsPage() {
         }, 10000); // 10 seconds per page
 
         return () => clearInterval(interval);
-    }, [parties.length]);
+    }, [parties.length, viewMode, manualIndex]);
 
     const visibleParties = parties.slice(currentIndex * 7, (currentIndex + 1) * 7);
 
     return (
         <div className={styles.container}>
             <div className={styles.header}>
-                <div className={styles.headerTitle}>คะแนน ส.ส.แบ่งเขต</div>
+                <div className={styles.headerTitle}>คะแนน สส.แบ่งเขต</div>
                 <div className={styles.headerSubtitle}>
-                    นับแล้ว <CountUp end={totalVotes} separator="," duration={1} />
+                    นับแล้ว
+                    <span style={{ marginLeft: '10px' }}>
+                        {countDisplayMode === 'votes' ? (
+                            <CountUp end={countedData.totalVotes} separator="," duration={1} />
+                        ) : (
+                            <><CountUp end={countedData.percent} decimals={2} duration={1} />%</>
+                        )}
+                    </span>
                 </div>
             </div>
 

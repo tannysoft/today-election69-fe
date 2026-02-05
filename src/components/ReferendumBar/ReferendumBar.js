@@ -3,9 +3,15 @@ import React from 'react';
 import CountUp from 'react-countup';
 import styles from './ReferendumBar.module.css';
 
-export default function ReferendumBar({ approve, disapprove, noVote, badCards, totalCounted, title }) {
-    const renderScore = (value) => {
-        return <CountUp end={value || 0} separator="," duration={2} />;
+export default function ReferendumBar({ approve, disapprove, noVote, badCards, totalCounted, title, isPercent = false }) {
+    const renderScore = (value, forceVotes = false) => {
+        const showPercent = isPercent && !forceVotes;
+        return (
+            <>
+                <CountUp end={value || 0} separator="," decimals={showPercent ? 2 : 0} duration={2} />
+                {showPercent && "%"}
+            </>
+        );
     };
 
     const totalVotes = (approve || 0) + (disapprove || 0);
@@ -58,12 +64,12 @@ export default function ReferendumBar({ approve, disapprove, noVote, badCards, t
             <div className={styles.bottomBar}>
                 <div className={styles.bottomItem}>
                     <span className={styles.bottomLabel}>ไม่ประสงค์ลงคะแนน</span>
-                    <div className={styles.bottomValueBox}>{renderScore(noVote)}</div>
+                    <div className={styles.bottomValueBox}>{renderScore(noVote, true)}</div>
                 </div>
 
                 <div className={styles.bottomItem}>
                     <span className={styles.bottomLabel}>บัตรเสีย</span>
-                    <div className={styles.bottomValueBox}>{renderScore(badCards)}</div>
+                    <div className={styles.bottomValueBox}>{renderScore(badCards, true)}</div>
                 </div>
 
                 <div className={styles.bottomItem}>

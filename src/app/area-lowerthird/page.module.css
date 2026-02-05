@@ -13,3 +13,7 @@
 .studioBackground {
     background: var(--bg-studio, radial-gradient(circle at center, #1f2937 0%, #111827 100%));
 }
+
+.transparentBg {
+    background: transparent !important;
+}

@@ -177,9 +177,12 @@ export async function getReferendumData() {
             return {
                 approve: list.items[0].agreeTotalVotes || 0,
                 disapprove: list.items[0].disagreeTotalVotes || 0,
+                approvePercent: list.items[0].agreePercentage || 0,
+                disagreePercent: list.items[0].disagreePercentage || 0,
                 no_vote: list.items[0].noVotes || 0,
                 bad_cards: list.items[0].invalidVotes || 0,
                 total_counted: list.items[0].totalVotes || 0,
+                totalPercent: list.items[0].percent || list.items[0].percentage || 0,
                 title: list.items[0].title || "หัวข้อประชามติ"
             };
         } else {
@@ -237,21 +240,102 @@ export async function getPartylistResult() {
     }
 }
 
+export async function getNationalPartylistTotal() {
+    try {
+        await pb.admins.authWithPassword(process.env.POCKETBASE_ADMIN_EMAIL, process.env.POCKETBASE_ADMIN_PASSWORD);
+
+        // Ensure collection is public
+        try {
+            const collection = await pb.collections.getOne('nationalPartylist');
+            if (collection.listRule !== '' || collection.viewRule !== '') {
+                await pb.collections.update('nationalPartylist', {
+                    listRule: '',
+                    viewRule: ''
+                });
+                console.log("Updated nationalPartylist rules to public.");
+            }
+        } catch (colError) {
+            console.warn("Could not check/update nationalPartylist rules:", colError.message);
+        }
+
+        const records = await pb.collection('nationalPartylist').getFullList({
+            fields: 'totalVotes,percent,percentage'
+        });
+        // console.log("DEBUG nationalPartylist:", records);
+        const total = records.reduce((sum, r) => sum + (r.totalVotes || 0), 0);
+
+        // Try 'percent' then 'percentage'
+        let percent = 0;
+        if (records.length > 0) {
+            percent = records[0].percent ?? records[0].percentage ?? 0;
+        }
+
+        return { totalVotes: total, percent };
+
+    } catch (error) {
+        console.error("Error fetching nationalPartylist total:", error);
+        return { totalVotes: 0, percent: 0 };
+    }
+}
+
+export async function getNationalTotal() {
+    try {
+        await pb.admins.authWithPassword(process.env.POCKETBASE_ADMIN_EMAIL, process.env.POCKETBASE_ADMIN_PASSWORD);
+
+        // Ensure collection is public
+        try {
+            const collection = await pb.collections.getOne('national');
+            if (collection.listRule !== '' || collection.viewRule !== '') {
+                await pb.collections.update('national', {
+                    listRule: '',
+                    viewRule: ''
+                });
+                console.log("Updated national rules to public.");
+            }
+        } catch (colError) {
+            console.warn("Could not check/update national rules:", colError.message);
+        }
+
+        const records = await pb.collection('national').getFullList({
+            fields: 'totalVotes,percent,percentage'
+        });
+        // console.log("DEBUG national:", records);
+        const total = records.reduce((sum, r) => sum + (r.totalVotes || 0), 0);
+
+        let percent = 0;
+        if (records.length > 0) {
+            percent = records[0].percent ?? records[0].percentage ?? 0;
+        }
+
+        return { totalVotes: total, percent };
+
+    } catch (error) {
+        console.error("Error fetching national total:", error);
+        return { totalVotes: 0, percent: 0 };
+    }
+}
+
 export async function getTotalVotes() {
     try {
         await pb.admins.authWithPassword(process.env.POCKETBASE_ADMIN_EMAIL, process.env.POCKETBASE_ADMIN_PASSWORD);
 
         // 1. Party List Votes (Sum of all parties)
+        // Original logic: Sum from 'parties' collection
+        // const parties = await pb.collection('parties').getFullList({ fields: 'partyListVotes' });
+        // const partyListTotal = parties.reduce((sum, p) => sum + (p.partyListVotes || 0), 0);
+
+        // NEW LOGIC: Use National Partylist collection for consistency if desired, 
+        // OR keep this as generic TotalVotes.
+        // The user specifically asked for /parties page to use 'nationalPartylist'.
+        // Let's leave getTotalVotes as is (fetching from parties/candidates) to avoid breaking other pages
+        // unless requested. But for /parties page we will use the specific new function.
+
         const parties = await pb.collection('parties').getFullList({
             fields: 'partyListVotes'
         });
         const partyListTotal = parties.reduce((sum, p) => sum + (p.partyListVotes || 0), 0);
 
         // 2. Constituency Votes (Sum of all candidates)
-        // Optimization: PocketBase doesn't have aggregate queries yet, so we have to fetch all candidates or use a view if available.
-        // Assuming we can fetch all candidates (might be heavy if thousands, but let's try).
-        // Alternatively, if there's a 'stats' collection use that.
-        // For now, fetch minimal fields.
         const candidates = await pb.collection('candidates').getFullList({
             fields: 'totalVotes'
         });

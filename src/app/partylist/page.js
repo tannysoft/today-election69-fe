@@ -1,21 +1,32 @@
 "use client";
 
 import { useState, useEffect, useMemo } from 'react';
-import { getPartylistResult } from '@/services/electionService';
+import { getPartylistResult, getNationalPartylistTotal } from '@/services/electionService';
 import { getSettings } from '@/services/settingsService';
 import pb from '@/lib/pocketbase';
 import ScoreCard from '@/components/LowerThird/ScoreCard';
+import CountUp from 'react-countup';
 import styles from './page.module.css';
 
 export default function PartyListPage() {
     const [allParties, setAllParties] = useState([]);
     const [hideZeroScore, setHideZeroScore] = useState(false);
     const [currentIndex, setCurrentIndex] = useState(0);
+    const [viewMode, setViewMode] = useState('auto'); // auto, manual
+    const [manualIndex, setManualIndex] = useState(0);
+    const [countDisplayMode, setCountDisplayMode] = useState('votes');
+    const [countedData, setCountedData] = useState({ totalVotes: 0, percent: 0 });
 
     const fetchData = async () => {
-        const data = await getPartylistResult();
-        // data.sort((a, b) => b.score - a.score); // Sorting is now done in the query
+        const [data, nationalData] = await Promise.all([
+            getPartylistResult(),
+            getNationalPartylistTotal()
+        ]);
         setAllParties(data);
+        setCountedData({
+            totalVotes: nationalData.totalVotes,
+            percent: nationalData.percent
+        });
     };
 
     const fetchSettings = async () => {
@@ -23,6 +34,15 @@ export default function PartyListPage() {
             const settings = await getSettings();
             if (settings) {
                 setHideZeroScore(settings.hide_zero_score);
+                const mode = settings.partylist_mode || 'auto';
+                const idx = Number(settings.partylist_index) || 0;
+                const cMode = settings.count_display_mode || 'votes';
+
+                setViewMode(mode);
+                setManualIndex(idx);
+                setCountDisplayMode(cMode);
+
+                if (mode === 'manual') setCurrentIndex(idx);
             }
         } catch (error) {
             console.error("Error fetching settings:", error);
@@ -36,14 +56,39 @@ export default function PartyListPage() {
         // Subscriptions
         pb.collection('partylistResult').subscribe('*', () => fetchData());
 
-        pb.collection('settings').subscribe('*', (e) => {
+        // Subscribe to nationalPartylist for header stats
+        const subNational = pb.collection('nationalPartylist').subscribe('*', async () => {
+            const data = await getNationalPartylistTotal();
+            setCountedData({
+                totalVotes: data.totalVotes,
+                percent: data.percent
+            });
+        });
+
+        const sub = pb.collection('settings').subscribe('*', (e) => {
             if (e.action === 'update' || e.action === 'create') {
-                setHideZeroScore(e.record.hide_zero_score);
+                const s = e.record;
+                setHideZeroScore(s.hide_zero_score);
+
+                const newMode = s.partylist_mode || 'auto';
+                const newIndex = Number(s.partylist_index) || 0;
+                const newCountMode = s.count_display_mode || 'votes';
+
+                setViewMode(newMode);
+                setManualIndex(newIndex);
+                setCountDisplayMode(newCountMode);
+
+                if (newMode === 'manual') {
+                    setCurrentIndex(newIndex);
+                }
             }
         });
 
         return () => {
+            sub.then(unsubscribe => unsubscribe && unsubscribe());
+            subNational.then(unsubscribe => unsubscribe && unsubscribe());
             pb.collection('partylistResult').unsubscribe('*');
+            pb.collection('nationalPartylist').unsubscribe('*');
             pb.collection('settings').unsubscribe('*');
         };
     }, []);
@@ -58,6 +103,13 @@ export default function PartyListPage() {
 
     useEffect(() => {
         if (parties.length === 0) return;
+
+        // Manual Mode
+        if (viewMode === 'manual') {
+            setCurrentIndex(manualIndex);
+            return;
+        }
+
         const interval = setInterval(() => {
             setCurrentIndex(prev => {
                 const maxIndex = Math.ceil(parties.length / 7);
@@ -66,10 +118,12 @@ export default function PartyListPage() {
             });
         }, 10000);
         return () => clearInterval(interval);
-    }, [parties.length]);
+    }, [parties.length, viewMode, manualIndex]);
 
     // Reset index if it goes out of bounds when toggling filter
     useEffect(() => {
+        if (viewMode === 'manual') return; // Don't auto-reset in manual mode unless imperative? actually safe check is good.
+
         const maxIndex = Math.ceil(parties.length / 7);
         if (currentIndex >= maxIndex && maxIndex > 0) {
             setCurrentIndex(0);
@@ -77,13 +131,20 @@ export default function PartyListPage() {
     }, [parties.length]);
 
     const visibleParties = parties.slice(currentIndex * 7, (currentIndex + 1) * 7);
-    const totalVotes = parties.reduce((acc, p) => acc + (p.score || 0), 0);
 
     return (
         <div className={styles.container}>
             <div className={styles.header}>
-                <div className={styles.title}>คะแนน ส.ส.บัญชีรายชื่อ</div>
-                <div className={styles.subtitle}>นับแล้ว <span style={{ color: 'white' }}>{totalVotes.toLocaleString()}</span></div>
+                <div className={styles.title}>คะแนน สส.บัญชีรายชื่อ</div>
+                <div className={styles.subtitle}>
+                    นับแล้ว <span style={{ color: 'white' }}>
+                        {countDisplayMode === 'votes' ? (
+                            <CountUp end={countedData.totalVotes} separator="," duration={1} />
+                        ) : (
+                            <><CountUp end={countedData.percent} decimals={2} duration={1} />%</>
+                        )}
+                    </span>
+                </div>
             </div>
 
             <div className={styles.listContainer}>

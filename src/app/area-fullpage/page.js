@@ -5,6 +5,7 @@ import ScoreCard from '@/components/LowerThird/ScoreCard';
 import { getElectionData } from '@/services/electionService';
 import { getSettings } from '@/services/settingsService';
 import pb from '@/lib/pocketbase';
+import { BANGKOK_ZONES } from '@/data/bangkokZones';
 import styles from './page.module.css';
 
 export default function AreaFullPage() {
@@ -116,7 +117,7 @@ export default function AreaFullPage() {
 
     if (!currentArea) {
         return (
-            <div className={`${styles.container} ${styles.studioBackground}`}>
+            <div className={styles.container}>
                 <div style={{ color: 'white', textAlign: 'center', paddingTop: '40vh', fontSize: '2rem' }}>
                     {allAreas.length === 0 ? "Loading Data..." : "Waiting for Filter Selection..."}
                 </div>
@@ -128,7 +129,7 @@ export default function AreaFullPage() {
     const otherCandidates = currentArea.candidates.slice(1, 5);
 
     return (
-        <div className={`${styles.container} ${styles.studioBackground}`}>
+        <div className={styles.container}>
             <div style={{
                 opacity: isVisible ? 1 : 0,
                 transition: 'opacity 0.5s ease-in-out',
@@ -137,10 +138,18 @@ export default function AreaFullPage() {
             }}>
                 {/* Header: Top Left */}
                 <div className={styles.headerArea} key={currentArea.id}>
-                    <div className={`${styles.province} ${styles.animFadeInRight}`} style={{ animationDelay: '0.1s' }}>{currentArea._provinceName}</div>
-                    <div className={`${styles.zonePill} ${styles.animFadeInRight}`} style={{ animationDelay: '0.3s' }}>
-                        <span>เขต {currentArea._zoneNumber}</span>
+                    <div className={styles.provinceZoneRow}>
+                        <div className={`${styles.province} ${styles.animFadeInRight}`} style={{ animationDelay: '0.1s' }}>{currentArea._provinceName}</div>
+                        <div className={`${styles.zonePill} ${styles.animFadeInRight}`} style={{ animationDelay: '0.3s' }}>
+                            <span>เขต {currentArea._zoneNumber}</span>
+                        </div>
                     </div>
+                    {/* Display Bangkok District Name if applicable */}
+                    {(currentArea._provinceName === 'กรุงเทพมหานคร' || currentArea._provinceName === 'Bangkok') && (
+                        <div className={`${styles.zoneDescription} ${styles.animFadeInRight}`} style={{ animationDelay: '0.5s' }}>
+                            {BANGKOK_ZONES[Number(currentArea._zoneNumber)]}
+                        </div>
+                    )}
                 </div>
 
                 {/* Main Content Area */}

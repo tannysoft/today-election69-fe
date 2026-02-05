@@ -29,6 +29,8 @@
     flex-direction: column;
     gap: 5px;
     margin-left: 200px;
+    min-width: 460px;
+    flex-direction: row-reverse;
     /* Indent as per design */
 }
 

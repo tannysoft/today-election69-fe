@@ -1,7 +1,9 @@
 "use client";
 
 import { useState, useEffect, useRef } from 'react';
-import { getPartyListData, getTotalVotes } from '@/services/electionService';
+import { getPartyListData, getTotalVotes, getNationalPartylistTotal, getNationalTotal } from '@/services/electionService';
+import { getSettings } from '@/services/settingsService';
+import pb from '@/lib/pocketbase';
 import CountUp from 'react-countup';
 import styles from './page.module.css';
 
@@ -9,6 +11,7 @@ import styles from './page.module.css';
 function PartyRow({ party, index, rank }) {
     const nameRef = useRef(null);
     const containerRef = useRef(null);
+    const [bgUrl, setBgUrl] = useState(null);
 
     const checkScale = () => {
         if (nameRef.current && containerRef.current) {
@@ -26,6 +29,26 @@ function PartyRow({ party, index, rank }) {
             }
         }
     };
+
+    useEffect(() => {
+        if (!party.name) {
+            setBgUrl(null);
+            return;
+        }
+
+        const targetUrl = `/parties/fullpage/${party.name}.svg`;
+        const img = new Image();
+        img.src = targetUrl;
+
+        img.onload = () => {
+            setBgUrl(targetUrl);
+        };
+
+        img.onerror = () => {
+            setBgUrl('/parties/fullpage/default.svg');
+        };
+
+    }, [party.name]);
 
     useEffect(() => {
         // Immediate check
@@ -58,7 +81,7 @@ function PartyRow({ party, index, rank }) {
             <div
                 className={styles.rowBackground}
                 style={{
-                    backgroundImage: `url('/parties/fullpage/${party.name}.svg')`,
+                    backgroundImage: bgUrl ? `url('${bgUrl}')` : 'none',
                 }}
             />
 
@@ -127,26 +150,113 @@ export default function PartiesPage() {
     const [parties, setParties] = useState([]);
     const [totalVotes, setTotalVotes] = useState({ partyListTotal: 0, constituencyTotal: 0 });
     const [currentIndex, setCurrentIndex] = useState(0);
+    const [viewMode, setViewMode] = useState('auto'); // auto, manual
+    const [manualIndex, setManualIndex] = useState(0);
+    const [countDisplayMode, setCountDisplayMode] = useState('votes'); // votes, percent
 
-    const fetchData = async () => {
-        const [partiesData, votesData] = await Promise.all([
-            getPartyListData(),
-            getTotalVotes()
-        ]);
-        setParties(partiesData.filter(p => p.count > 0));
-        setTotalVotes(votesData);
+    const fetchAllData = async () => {
+        try {
+            const [partiesData, nationalPartylistData, nationalConstituencyData] = await Promise.all([
+                getPartyListData(),
+                getNationalPartylistTotal(),
+                getNationalTotal()
+            ]);
+
+            setParties(partiesData.filter(p => p.count > 0));
+            // Store full objects now
+            setTotalVotes({
+                partyListTotal: nationalPartylistData.totalVotes,
+                partyListPercent: nationalPartylistData.percent,
+                constituencyTotal: nationalConstituencyData.totalVotes,
+                constituencyPercent: nationalConstituencyData.percent
+            });
+        } catch (error) {
+            console.error("Error fetching all data:", error);
+        }
     };
 
     useEffect(() => {
-        fetchData();
-        // ... polling logic
-        const interval = setInterval(fetchData, 10000); // Polling added explicitly just in case
-        return () => clearInterval(interval);
+        fetchAllData();
+
+        // Fetch initial settings
+        getSettings().then(settings => {
+            if (settings) {
+                const mode = settings.party_page_mode || 'auto';
+                const idx = Number(settings.party_page_index) || 0;
+                const cMode = settings.count_display_mode || 'votes';
+
+                setViewMode(mode);
+                setManualIndex(idx);
+                setCountDisplayMode(cMode);
+
+                if (mode === 'manual') setCurrentIndex(idx);
+            }
+        });
+
+        // Realtime Settings Subscription
+        const subSettings = pb.collection('settings').subscribe('*', (e) => {
+            if (e.action === 'update' || e.action === 'create') {
+                const s = e.record;
+                const newMode = s.party_page_mode || 'auto';
+                const newIndex = Number(s.party_page_index) || 0;
+                const newCountMode = s.count_display_mode || 'votes';
+
+                setViewMode(newMode);
+                setManualIndex(newIndex);
+                setCountDisplayMode(newCountMode);
+
+                // Immediate update for manual mode to skip effect delay
+                if (newMode === 'manual') {
+                    setCurrentIndex(newIndex);
+                }
+            }
+        });
+
+        // Realtime nationalPartylist Subscription
+        const subNationalPartylist = pb.collection('nationalPartylist').subscribe('*', async () => {
+            const data = await getNationalPartylistTotal();
+            setTotalVotes(prev => ({
+                ...prev,
+                partyListTotal: data.totalVotes,
+                partyListPercent: data.percent
+            }));
+        });
+
+        // Realtime national (Constituency) Subscription
+        const subNational = pb.collection('national').subscribe('*', async () => {
+            const data = await getNationalTotal();
+            setTotalVotes(prev => ({
+                ...prev,
+                constituencyTotal: data.totalVotes,
+                constituencyPercent: data.percent
+            }));
+        });
+
+        // Polling
+        const interval = setInterval(fetchAllData, 10000);
+
+        return () => {
+            clearInterval(interval);
+            subSettings.then(unsubscribe => unsubscribe && unsubscribe());
+            subNationalPartylist.then(unsubscribe => unsubscribe && unsubscribe());
+            subNational.then(unsubscribe => unsubscribe && unsubscribe());
+            pb.collection('settings').unsubscribe('*');
+            pb.collection('nationalPartylist').unsubscribe('*');
+            pb.collection('national').unsubscribe('*');
+        };
     }, []);
 
     // Loop Effect
     useEffect(() => {
         if (parties.length === 0) return;
+
+        // Manual Mode: Force index
+        if (viewMode === 'manual') {
+            setCurrentIndex(manualIndex);
+            return;
+        }
+
+        // Auto Mode: Loop
         const interval = setInterval(() => {
             setCurrentIndex(prev => {
                 const maxIndex = Math.ceil(parties.length / 5);
@@ -155,20 +265,41 @@ export default function PartiesPage() {
         }, 10000); // 10 seconds
 
         return () => clearInterval(interval);
-    }, [parties.length]);
+    }, [parties.length, viewMode, manualIndex]);
 
     const visibleParties = parties.slice(currentIndex * 5, (currentIndex + 1) * 5);
 
     return (
-        <div className={`${styles.container} ${styles.studioBackground}`}>
+        <div className={styles.container}>
             <div className={styles.header}>
-                <div className={styles.headerTitle}>รวมจำนวน ส.ส.</div>
+                <div className={styles.headerTitle}>รวมจำนวน สส.</div>
                 <div className={styles.headerStats}>
                     <div className={styles.statItem}>
-                        <span className={styles.statLabel}>บัญชีรายชื่อและเขต</span>
+                        <span className={styles.statLabel}>เขต</span>
                         <span className={styles.statLabelSmall}>นับแล้ว</span>
                         <span className={styles.statValue}>
-                            <CountUp end={totalVotes.partyListTotal + totalVotes.constituencyTotal} separator="," duration={1} />
+                            {countDisplayMode === 'votes' ? (
+                                <CountUp end={totalVotes.constituencyTotal} separator="," duration={1} />
+                            ) : (
+                                <>
+                                    <CountUp end={totalVotes.constituencyPercent || 0} decimals={2} duration={1} />%
+                                </>
+                            )}
+                        </span>
+                    </div>
+                </div>
+                <div className={styles.headerStats}>
+                    <div className={styles.statItem}>
+                        <span className={styles.statLabel}>บัญชีรายชื่อ</span>
+                        <span className={styles.statLabelSmall}>นับแล้ว</span>
+                        <span className={styles.statValue}>
+                            {countDisplayMode === 'votes' ? (
+                                <CountUp end={totalVotes.partyListTotal} separator="," duration={1} />
+                            ) : (
+                                <>
+                                    <CountUp end={totalVotes.partyListPercent || 0} decimals={2} duration={1} />%
+                                </>
+                            )}
                         </span>
                     </div>
                 </div>

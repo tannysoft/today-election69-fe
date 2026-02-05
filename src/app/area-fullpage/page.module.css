@@ -10,13 +10,33 @@
 .studioBackground {}
 
 /* Header: Province & Zone */
+/* Header: Province & Zone */
 .headerArea {
     position: absolute;
     top: 70px;
     left: 130px;
     display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0;
+}
+
+.provinceZoneRow {
+    display: flex;
     align-items: center;
     gap: 20px;
+}
+
+.zoneDescription {
+    font-size: 2.5rem;
+    font-weight: 500;
+    color: #ddd;
+    margin-left: 0;
+    margin-top: 0;
+    max-width: 1600px;
+    line-height: 1.1;
+    white-space: normal;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
 }
 
 .province {

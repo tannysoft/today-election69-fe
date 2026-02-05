@@ -37,3 +37,7 @@
 :global(body.remove-bg) .titleArea {
     opacity: 0;
 }
+
+.transparentBg {
+    background: transparent !important;
+}

@@ -144,7 +144,7 @@ export default function PartiesFullPage() {
 
     return (
         <div className={styles.container}>
-            <div className={styles.header}>รวมจำนวน ส.ส.</div>
+            <div className={styles.header}>รวมจำนวน สส.</div>
 
             <div className={styles.gridContainer} key={currentIndex}>
                 {visibleParties.map((party, index) => (

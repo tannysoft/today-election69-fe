@@ -27,7 +27,14 @@ export async function getSettings() {
                 filter_province: list.items[0].filter_province || "",
                 filter_district: list.items[0].filter_district || "",
                 hide_zero_score: list.items[0].hide_zero_score || false,
-                remove_background: list.items[0].remove_background || false
+                remove_background: list.items[0].remove_background || false,
+                party_page_mode: list.items[0].party_page_mode || "auto",
+                party_page_index: list.items[0].party_page_index || 0,
+                party_seats_mode: list.items[0].party_seats_mode || "auto",
+                party_seats_index: list.items[0].party_seats_index || 0,
+                partylist_mode: list.items[0].partylist_mode || "auto",
+                partylist_index: list.items[0].partylist_index || 0,
+                count_display_mode: list.items[0].count_display_mode || "votes"
             };
         } else {
             // Collection exists but empty -> create default
@@ -35,14 +42,18 @@ export async function getSettings() {
                 filter_province: "",
                 filter_district: "",
                 hide_zero_score: false,
-                remove_background: false
+                remove_background: false,
+                party_page_mode: "auto",
+                party_page_index: 0
             });
             return {
                 id: newRecord.id,
                 filter_province: "",
                 filter_district: "",
                 hide_zero_score: false,
-                remove_background: false
+                remove_background: false,
+                party_page_mode: "auto",
+                party_page_index: 0
             };
         }
     } catch (error) {
@@ -57,7 +68,9 @@ export async function getSettings() {
                     schema: [
                         { name: 'filter_province', type: 'text' },
                         { name: 'filter_district', type: 'text' },
-                        { name: 'hide_zero_score', type: 'bool' }
+                        { name: 'hide_zero_score', type: 'bool' },
+                        { name: 'party_page_mode', type: 'text' },
+                        { name: 'party_page_index', type: 'number' }
                     ],
                     listRule: '',   // Public Read (needed for client subscription)
                     viewRule: '',   // Public Read
@@ -70,14 +83,18 @@ export async function getSettings() {
                 const newRecord = await pb.collection('settings').create({
                     filter_province: "",
                     filter_district: "",
-                    hide_zero_score: false
+                    hide_zero_score: false,
+                    party_page_mode: "auto",
+                    party_page_index: 0
                 });
 
                 return {
                     id: newRecord.id,
                     filter_province: "",
                     filter_district: "",
-                    hide_zero_score: false
+                    hide_zero_score: false,
+                    party_page_mode: "auto",
+                    party_page_index: 0
                 };
 
             } catch (createError) {
@@ -122,6 +139,48 @@ export async function ensureCollectionsPublic() {
                 // Check remove_background
                 if (!schema.some(f => f.name === 'remove_background')) {
                     schema.push({ name: 'remove_background', type: 'bool' });
+                    schemaChanged = true;
+                }
+
+                // Check party_page_mode
+                if (!schema.some(f => f.name === 'party_page_mode')) {
+                    schema.push({ name: 'party_page_mode', type: 'text' });
+                    schemaChanged = true;
+                }
+
+                // Check party_page_index
+                if (!schema.some(f => f.name === 'party_page_index')) {
+                    schema.push({ name: 'party_page_index', type: 'number' });
+                    schemaChanged = true;
+                }
+
+                // Check party_seats_mode
+                if (!schema.some(f => f.name === 'party_seats_mode')) {
+                    schema.push({ name: 'party_seats_mode', type: 'text' });
+                    schemaChanged = true;
+                }
+
+                // Check party_seats_index
+                if (!schema.some(f => f.name === 'party_seats_index')) {
+                    schema.push({ name: 'party_seats_index', type: 'number' });
+                    schemaChanged = true;
+                }
+
+                // Check partylist_mode
+                if (!schema.some(f => f.name === 'partylist_mode')) {
+                    schema.push({ name: 'partylist_mode', type: 'text' });
+                    schemaChanged = true;
+                }
+
+                // Check partylist_index
+                if (!schema.some(f => f.name === 'partylist_index')) {
+                    schema.push({ name: 'partylist_index', type: 'number' });
+                    schemaChanged = true;
+                }
+
+                // Check count_display_mode
+                if (!schema.some(f => f.name === 'count_display_mode')) {
+                    schema.push({ name: 'count_display_mode', type: 'text' });
                     schemaChanged = true;
                 }
 

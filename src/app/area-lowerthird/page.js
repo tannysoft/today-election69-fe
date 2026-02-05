@@ -17,6 +17,7 @@ export default function AreaPage() {
     const [filterProvince, setFilterProvince] = useState("");
     const [filterDistrict, setFilterDistrict] = useState("");
     const [hideZeroScore, setHideZeroScore] = useState(false);
+    // const [removeBackground, setRemoveBackground] = useState(false); // Removed
 
     useEffect(() => {
         // Fetch data on mount
@@ -35,6 +36,7 @@ export default function AreaPage() {
                     setFilterProvince(s.filter_province || "");
                     setFilterDistrict(s.filter_district || "");
                     setHideZeroScore(s.hide_zero_score || false);
+                    // setRemoveBackground(s.remove_background || false); // Removed
                 }
             } catch (err) {
                 console.warn("Could not fetch settings:", err);
@@ -45,8 +47,7 @@ export default function AreaPage() {
         // Realtime Subscription: Candidates
         pb.collection('candidates').subscribe('*', async function (e) {
             if (e.action === 'update') {
-                // Fetch the latest sorted candidates for this area from the server
-                // This ensures we rely on the DB for sorting
+                // ... (existing logic)
                 const updatedCandidates = await getCandidatesForArea(e.record.area);
 
                 setAllAreas(prevAreas => {
@@ -67,6 +68,7 @@ export default function AreaPage() {
                     setFilterProvince(e.record.filter_province || "");
                     setFilterDistrict(e.record.filter_district || "");
                     setHideZeroScore(e.record.hide_zero_score || false);
+                    // setRemoveBackground(e.record.remove_background || false); // Removed
 
                     // Reset index on filter change to allow smooth transition to new set
                     setCurrentIndex(0);
@@ -85,85 +87,55 @@ export default function AreaPage() {
         };
     }, []);
 
-    // Derived State: filteredAreas (Instant update, no useEffect delay)
+    // ... (Memoized filteredAreas logic remains same)
     const filteredAreas = useMemo(() => {
         let result = allAreas.map(area => {
-            // Create a deep(ish) copy or at least shallow copy of candidates to not mutate original
             return { ...area, candidates: [...area.candidates] };
         });
 
-        // 1. Filter by Province
         if (filterProvince) {
             result = result.filter(area => area._provinceName === filterProvince);
         }
 
-        // 2. Filter by District
         if (filterDistrict) {
             result = result.filter(area => String(area._zoneNumber) === String(filterDistrict));
         }
 
-        // 3. Hide Zero Score - Candidate Level
         if (hideZeroScore) {
-            console.log("Filtering Zero Scores...");
+            // ... (hide zero score logic)
             result = result.map(area => {
-                const filteredCandidates = area.candidates.filter(c => {
-                    const keep = Number(c.score) > 0;
-                    if (!keep) {
-                        // console.log(`Dropping candidate ${c.name} with score ${c.score}`);
-                    }
-                    return keep;
-                });
+                const filteredCandidates = area.candidates.filter(c => Number(c.score) > 0);
                 return { ...area, candidates: filteredCandidates };
             });
 
-            // 4. Hide Area if No Candidates Left
-            result = result.filter(area => {
-                if (area.candidates.length === 0) {
-                    console.log(`Hiding Area ${area.name} because no candidates left.`);
-                    return false;
-                }
-                return true;
-            });
-        } else {
-            console.log("Hide Zero Score is OFF");
+            result = result.filter(area => area.candidates.length > 0);
         }
 
         return result;
     }, [allAreas, filterProvince, filterDistrict, hideZeroScore]);
 
-
+    // ... (Cycling logic remains same)
     const [isExiting, setIsExiting] = useState(false);
-
-    // Cycling Logic
     useEffect(() => {
         if (filteredAreas.length <= 1) return;
-
         const loopInterval = setInterval(() => {
-            // 1. Start Exit Animation
             setIsExiting(true);
-
-            // 2. Wait for animation to finish, then switch data
             setTimeout(() => {
                 setCurrentIndex((prev) => (prev + 1) % filteredAreas.length);
                 setIsExiting(false);
-            }, 500); // 0.5s duration to match CSS
-
-        }, 10000); // 10 seconds per area (including transition)
-
+            }, 500);
+        }, 10000);
         return () => clearInterval(loopInterval);
     }, [filteredAreas]);
 
-    // Safe access
-    // Guard against index out of bounds if list shrinks
     const validIndex = filteredAreas.length > 0 ? currentIndex % filteredAreas.length : 0;
     const currentArea = filteredAreas.length > 0 ? filteredAreas[validIndex] : null;
 
     if (!currentArea && filteredAreas.length === 0) {
-        // Show a different message if filtered out completely vs loading
         const isLoading = allAreas.length === 0;
 
         return (
-            <div className={`${styles.container} ${styles.studioBackground}`}>
+            <div className={`${styles.container} ${styles.transparentBg}`}>
                 <div style={{ color: 'white', textAlign: 'center', paddingTop: '20vh' }}>
                     {isLoading ? "Loading Election Data..." : "Waiting for Filter Selection..."}
                 </div>
@@ -172,19 +144,7 @@ export default function AreaPage() {
     }
 
     return (
-        <div className={`${styles.container} ${styles.studioBackground}`}>
-            <div className="camera-feed-watermark" style={{
-                position: 'absolute',
-                top: '200px',
-                width: '100%',
-                textAlign: 'center',
-                color: 'rgba(255,255,255,0.1)',
-                fontSize: '3rem',
-                fontWeight: 700
-            }}>
-                1920 x 1080 CAMERA FEED
-            </div>
-
+        <div className={`${styles.container} ${styles.transparentBg}`}>
             <div style={{
                 width: '100%',
                 height: '100%'
