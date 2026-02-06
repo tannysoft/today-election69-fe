@@ -30,24 +30,31 @@ function PartyRow({ party, index, rank }) {
         }
     };
 
+    // Whitelist of parties with custom background images
+    const AVAILABLE_BG_PARTIES = [
+        'พรรคกล้าธรรม',
+        'พรรคประชาชน',
+        'พรรคประชาธิปัตย์',
+        'พรรคพลังประชารัฐ',
+        'พรรคภูมิใจไทย',
+        'พรรครวมไทยสร้างชาติ',
+        'พรรคเพื่อไทย',
+        'พรรคเศรษฐกิจ',
+        'พรรคไทยก้าวใหม่',
+        'พรรคไทยสร้างไทย'
+    ];
+
     useEffect(() => {
         if (!party.name) {
             setBgUrl(null);
             return;
         }
 
-        const targetUrl = `/parties/fullpage/${party.name}.svg`;
-        const img = new Image();
-        img.src = targetUrl;
-
-        img.onload = () => {
-            setBgUrl(targetUrl);
-        };
-
-        img.onerror = () => {
+        if (AVAILABLE_BG_PARTIES.includes(party.name)) {
+            setBgUrl(`/parties/fullpage/${party.name}.svg`);
+        } else {
             setBgUrl('/parties/fullpage/default.svg');
-        };
-
+        }
     }, [party.name]);
 
     useEffect(() => {
@@ -86,18 +93,20 @@ function PartyRow({ party, index, rank }) {
             />
 
             {/* PM Candidates Image (Single Group) */}
-            <div
-                className={styles.pmImageContainer}
-                style={party.name === 'พรรคเพื่อไทย' ? { left: '70px' } : {}}
-            >
-                <img
-                    src={`/pm-candidates-group/${party.name}.png`}
-                    alt="PM Candidates"
-                    className={styles.pmImage}
-                    style={party.name === 'พรรคเพื่อไทย' ? { height: '95%' } : {}}
-                    onError={(e) => e.target.style.display = 'none'}
-                />
-            </div>
+            {bgUrl && bgUrl !== '/parties/fullpage/default.svg' && (
+                <div
+                    className={styles.pmImageContainer}
+                    style={party.name === 'พรรคเพื่อไทย' ? { left: '70px' } : {}}
+                >
+                    <img
+                        src={`/pm-candidates-group/${party.name}.png`}
+                        alt="PM Candidates"
+                        className={styles.pmImage}
+                        style={party.name === 'พรรคเพื่อไทย' ? { height: '95%' } : {}}
+                        onError={(e) => e.target.style.display = 'none'}
+                    />
+                </div>
+            )}
 
             {/* Card Content Area */}
             <div className={styles.cardContent}>
