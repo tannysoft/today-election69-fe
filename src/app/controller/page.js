@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { getElectionData, getPartyListData } from '@/services/electionService';
 import { getSettings, updateSettings } from '@/services/settingsService';
 import styles from './page.module.css';
@@ -39,6 +39,9 @@ export default function ControllerPage() {
 
     const [settingsId, setSettingsId] = useState(null);
     const [statusMessage, setStatusMessage] = useState("");
+
+    // Timer ref to manage status clearing
+    const statusTimerRef = useRef(null);
 
     // Custom Toggle Component (CSS Modules)
     const Toggle = ({ label, checked, onChange, type = "green" }) => (
@@ -167,6 +170,7 @@ export default function ControllerPage() {
                 count_display_mode: countDisplayMode,
             });
 
+            // ... inside handleUpdate ...
             if (success) {
                 setAppliedProvince(province);
                 setAppliedDistrict(district);
@@ -179,9 +183,24 @@ export default function ControllerPage() {
                 setAppliedPartylistMode(partylistMode);
                 setAppliedPartylistIndex(partylistIndex);
                 setAppliedCountDisplayMode(countDisplayMode);
+
                 setStatusMessage("Update Successful");
+
+                // Clear previous timer if exists
+                if (statusTimerRef.current) clearTimeout(statusTimerRef.current);
+
+                // Set new timer
+                statusTimerRef.current = setTimeout(() => {
+                    setStatusMessage("");
+                }, 3000);
+
             } else {
                 setStatusMessage("Update Failed");
+                // Also clear for failure? Usually yes.
+                if (statusTimerRef.current) clearTimeout(statusTimerRef.current);
+                statusTimerRef.current = setTimeout(() => {
+                    setStatusMessage("");
+                }, 3000);
             }
         } catch (error) {
             console.error(error);

@@ -1,5 +1,5 @@
 :root {
-  --background: #0a0a0a;
+  --background: transparent;
   --foreground: #ededed;
   --primary: #2563eb;
   --primary-glow: #3b82f6;
@@ -14,7 +14,7 @@
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --background: #0a0a0a;
+    --background: transparent;
     --foreground: #ededed;
   }
 }
