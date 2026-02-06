@@ -170,7 +170,6 @@ export default function ControllerPage() {
                 count_display_mode: countDisplayMode,
             });
 
-            // ... inside handleUpdate ...
             if (success) {
                 setAppliedProvince(province);
                 setAppliedDistrict(district);
@@ -186,10 +185,8 @@ export default function ControllerPage() {
 
                 setStatusMessage("Update Successful");
 
-                // Clear previous timer if exists
                 if (statusTimerRef.current) clearTimeout(statusTimerRef.current);
 
-                // Set new timer
                 statusTimerRef.current = setTimeout(() => {
                     setStatusMessage("");
                 }, 3000);

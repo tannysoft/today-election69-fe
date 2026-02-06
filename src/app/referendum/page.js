@@ -10,22 +10,28 @@ import styles from './page.module.css';
 
 export default function ReferendumPage() {
     const [data, setData] = useState({
-        approve: 0,
-        disapprove: 0,
-        approvePercent: 0,
-        disagreePercent: 0,
+        agree: 0,
+        disagree: 0,
+        agreePercentage: 0,
+        disagreePercentage: 0,
         no_vote: 0,
         bad_cards: 0,
         total_counted: 0,
         title: ""
     });
-    // const [removeBackground, setRemoveBackground] = useState(false); // Removed
+    const [removeBackground, setRemoveBackground] = useState(false);
     const [countDisplayMode, setCountDisplayMode] = useState('votes');
 
     const fetchData = async () => {
         const result = await getReferendumData();
         if (result) {
-            setData(result);
+            setData({
+                ...result,
+                agree: result.agreeTotalVotes || result.agree || 0,
+                disagree: result.disagreeTotalVotes || result.disagree || 0,
+                agreePercentage: result.agreePercentage || 0,
+                disagreePercentage: result.disagreePercentage || 0,
+            });
         }
 
         try {
@@ -48,10 +54,10 @@ export default function ReferendumPage() {
                 // console.log("Referendum Update:", e.action);
                 if (e.action === 'update' || e.action === 'create') {
                     setData({
-                        approve: e.record.agreeTotalVotes || 0,
-                        disapprove: e.record.disagreeTotalVotes || 0,
-                        approvePercent: e.record.agreePercentage || 0,
-                        disagreePercent: e.record.disagreePercentage || 0,
+                        agree: e.record.agreeTotalVotes || 0,
+                        disagree: e.record.disagreeTotalVotes || 0,
+                        agreePercentage: e.record.agreePercentage || 0,
+                        disagreePercentage: e.record.disagreePercentage || 0,
                         no_vote: e.record.noVotes || 0,
                         bad_cards: e.record.invalidVotes || 0,
                         total_counted: e.record.totalVotes || 0,
@@ -87,7 +93,7 @@ export default function ReferendumPage() {
     const isPercent = countDisplayMode === 'percent';
 
     return (
-        <div className={`${styles.container} ${styles.transparentBg}`}>
+        <div className={`${styles.container} ${removeBackground ? styles.transparentBg : ''}`}>
             {/* Title (Optional) */}
             {data.title && (
                 <div className={styles.titleArea}>
@@ -97,8 +103,8 @@ export default function ReferendumPage() {
 
             <div className={styles.contentArea}>
                 <ReferendumBar
-                    approve={isPercent ? data.approvePercent : data.approve}
-                    disapprove={isPercent ? data.disagreePercent : data.disapprove}
+                    agree={isPercent ? data.agreePercentage : data.agree}
+                    disagree={isPercent ? data.disagreePercentage : data.disagree}
                     noVote={data.no_vote}
                     badCards={data.bad_cards}
                     totalCounted={isPercent ? data.totalPercent : data.total_counted}

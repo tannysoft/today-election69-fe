@@ -175,10 +175,10 @@ export async function getReferendumData() {
         });
         if (list.items.length > 0) {
             return {
-                approve: list.items[0].agreeTotalVotes || 0,
-                disapprove: list.items[0].disagreeTotalVotes || 0,
-                approvePercent: list.items[0].agreePercentage || 0,
-                disagreePercent: list.items[0].disagreePercentage || 0,
+                agree: list.items[0].agreeTotalVotes || 0,
+                disagree: list.items[0].disagreeTotalVotes || 0,
+                agreePercentage: list.items[0].agreePercentage || 0,
+                disagreePercentage: list.items[0].disagreePercentage || 0,
                 no_vote: list.items[0].noVotes || 0,
                 bad_cards: list.items[0].invalidVotes || 0,
                 total_counted: list.items[0].totalVotes || 0,
@@ -188,8 +188,8 @@ export async function getReferendumData() {
         } else {
             // Mock Data if collection exists but empty or logic above falls through
             return {
-                approve: 0,
-                disapprove: 0,
+                agree: 0,
+                disagree: 0,
                 no_vote: 0,
                 bad_cards: 0,
                 total_counted: 0,

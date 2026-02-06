@@ -3,7 +3,7 @@ import React from 'react';
 import CountUp from 'react-countup';
 import styles from './ReferendumBar.module.css';
 
-export default function ReferendumBar({ approve, disapprove, noVote, badCards, totalCounted, title, isPercent = false }) {
+export default function ReferendumBar({ agree, disagree, noVote, badCards, totalCounted, title, isPercent = false }) {
     const renderScore = (value, forceVotes = false) => {
         const showPercent = isPercent && !forceVotes;
         return (
@@ -14,9 +14,9 @@ export default function ReferendumBar({ approve, disapprove, noVote, badCards, t
         );
     };
 
-    const totalVotes = (approve || 0) + (disapprove || 0);
-    const approvePercent = totalVotes > 0 ? ((approve || 0) / totalVotes) * 100 : 0;
-    const disapprovePercent = totalVotes > 0 ? ((disapprove || 0) / totalVotes) * 100 : 0;
+    const totalVotes = (agree || 0) + (disagree || 0);
+    const agreePercent = totalVotes > 0 ? ((agree || 0) / totalVotes) * 100 : 0;
+    const disagreePercent = totalVotes > 0 ? ((disagree || 0) / totalVotes) * 100 : 0;
 
     return (
         <div className={styles.container}>
@@ -32,11 +32,11 @@ export default function ReferendumBar({ approve, disapprove, noVote, badCards, t
                         <div className={styles.textRow}>
                             <div className={styles.label}>เห็นชอบ</div>
                             <div className={styles.scoreBox}>
-                                {renderScore(approve)}
+                                {renderScore(agree)}
                             </div>
                         </div>
                         <div className={styles.greyBar}>
-                            <div className={styles.barFillAgree} style={{ width: `${approvePercent}%` }}></div>
+                            <div className={styles.barFillAgree} style={{ width: `${agreePercent}%` }}></div>
                         </div>
                     </div>
                 </div>
@@ -46,12 +46,12 @@ export default function ReferendumBar({ approve, disapprove, noVote, badCards, t
                     <div className={styles.contentColumn}>
                         <div className={`${styles.textRow} ${styles.textRowRight}`}>
                             <div className={styles.scoreBox}>
-                                {renderScore(disapprove)}
+                                {renderScore(disagree)}
                             </div>
                             <div className={styles.label}>ไม่เห็นชอบ</div>
                         </div>
                         <div className={styles.greyBar}>
-                            <div className={styles.barFillDisagree} style={{ width: `${disapprovePercent}%` }}></div>
+                            <div className={styles.barFillDisagree} style={{ width: `${disagreePercent}%` }}></div>
                         </div>
                     </div>
                     <div className={styles.iconBoxDisagree}>
