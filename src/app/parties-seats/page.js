@@ -3,7 +3,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { getPartyListData, getNationalTotal } from '@/services/electionService';
 import { getSettings } from '@/services/settingsService';
-import pb from '@/lib/pocketbase';
+// import pb from '@/lib/pocketbase'; // Removed
 import CountUp from 'react-countup';
 import styles from './page.module.css';
 
@@ -103,57 +103,33 @@ export default function PartiesSeatsPage() {
     };
 
     useEffect(() => {
-        fetchData();
+        const fetchSettingsData = () => {
+            getSettings().then(settings => {
+                if (settings) {
+                    const mode = settings.party_seats_mode || 'auto';
+                    const idx = Number(settings.party_seats_index) || 0;
+                    const cMode = settings.count_display_mode || 'votes';
 
-        // Fetch initial settings
-        getSettings().then(settings => {
-            if (settings) {
-                const mode = settings.party_seats_mode || 'auto';
-                const idx = Number(settings.party_seats_index) || 0;
-                const cMode = settings.count_display_mode || 'votes';
+                    setViewMode(mode);
+                    setManualIndex(idx);
+                    setCountDisplayMode(cMode);
 
-                setViewMode(mode);
-                setManualIndex(idx);
-                setCountDisplayMode(cMode);
-
-                if (mode === 'manual') setCurrentIndex(idx);
-            }
-        });
-
-        // Realtime Settings Subscription
-        const subSettings = pb.collection('settings').subscribe('*', (e) => {
-            if (e.action === 'update' || e.action === 'create') {
-                const s = e.record;
-                const newMode = s.party_seats_mode || 'auto';
-                const newIndex = Number(s.party_seats_index) || 0;
-                const newCountMode = s.count_display_mode || 'votes';
-
-                setViewMode(newMode);
-                setManualIndex(newIndex);
-                setCountDisplayMode(newCountMode);
-
-                if (newMode === 'manual') {
-                    setCurrentIndex(newIndex);
+                    if (mode === 'manual') setCurrentIndex(idx);
                 }
-            }
-        });
-
-        // Realtime National Subscription
-        const subNational = pb.collection('national').subscribe('*', async () => {
-            const data = await getNationalTotal();
-            setCountedData({
-                totalVotes: data.totalVotes,
-                percent: data.percent
             });
-        });
+        };
 
-        const interval = setInterval(fetchData, 60000);
+        // Initial
+        fetchData();
+        fetchSettingsData();
+
+        // Intervals
+        const dataInterval = setInterval(fetchData, 30000);
+        const settingsInterval = setInterval(fetchSettingsData, 3000);
+
         return () => {
-            clearInterval(interval);
-            subSettings.then(unsubscribe => unsubscribe && unsubscribe());
-            subNational.then(unsubscribe => unsubscribe && unsubscribe());
-            pb.collection('settings').unsubscribe('*');
-            pb.collection('national').unsubscribe('*');
+            clearInterval(dataInterval);
+            clearInterval(settingsInterval);
         };
     }, []);
 

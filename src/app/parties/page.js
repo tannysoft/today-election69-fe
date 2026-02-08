@@ -185,10 +185,7 @@ export default function PartiesPage() {
     };
 
     useEffect(() => {
-        const loadAll = () => {
-            fetchAllData();
-
-            // Fetch settings
+        const fetchSettingsData = () => {
             getSettings().then(settings => {
                 if (settings) {
                     const mode = settings.party_page_mode || 'auto';
@@ -204,11 +201,17 @@ export default function PartiesPage() {
             });
         };
 
-        loadAll();
-        const interval = setInterval(loadAll, 30000); // 30 seconds polling
+        // Initial Load
+        fetchAllData();
+        fetchSettingsData();
+
+        // Intervals
+        const dataInterval = setInterval(fetchAllData, 30000); // 30 seconds
+        const settingsInterval = setInterval(fetchSettingsData, 3000); // 3 seconds
 
         return () => {
-            clearInterval(interval);
+            clearInterval(dataInterval);
+            clearInterval(settingsInterval);
         };
     }, []);
 

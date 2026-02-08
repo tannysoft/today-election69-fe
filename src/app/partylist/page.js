@@ -50,16 +50,17 @@ export default function PartyListPage() {
     };
 
     useEffect(() => {
-        const loadAll = () => {
-            fetchData();
-            fetchSettings();
-        };
+        // Initial Load
+        fetchData();
+        fetchSettings();
 
-        loadAll();
-        const interval = setInterval(loadAll, 30000); // 30 seconds polling
+        // Intervals
+        const dataInterval = setInterval(fetchData, 30000); // 30 seconds for data
+        const settingsInterval = setInterval(fetchSettings, 3000); // 3 seconds for settings
 
         return () => {
-            clearInterval(interval);
+            clearInterval(dataInterval);
+            clearInterval(settingsInterval);
         };
     }, []);
 

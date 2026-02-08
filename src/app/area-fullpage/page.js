@@ -21,27 +21,38 @@ export default function AreaFullPage() {
     useEffect(() => {
         // Fetch data on mount (limit 7)
         // Fetch data on mount and interval
-        async function fetchData() {
+        async function fetchElectionData() {
             const data = await getElectionData(5); // Keep limit 5 from original
             if (data && data.length > 0) {
                 setAllAreas(data);
             }
+        }
 
+        async function fetchSettingsData() {
             // Fetch settings
-            getSettings().then(s => {
+            try {
+                const s = await getSettings();
                 if (s) {
                     setFilterProvince(s.filter_province || "");
                     setFilterDistrict(s.filter_district || "");
                     setHideZeroScore(s.hide_zero_score || false);
                 }
-            });
+            } catch (err) {
+                console.warn("Could not fetch settings:", err);
+            }
         }
 
-        fetchData();
-        const interval = setInterval(fetchData, 30000); // 30 seconds polling
+        // Initial Fetch
+        fetchElectionData();
+        fetchSettingsData();
+
+        // Intervals
+        const dataInterval = setInterval(fetchElectionData, 30000); // 30 seconds for data
+        const settingsInterval = setInterval(fetchSettingsData, 3000); // 3 seconds for settings
 
         return () => {
-            clearInterval(interval);
+            clearInterval(dataInterval);
+            clearInterval(settingsInterval);
         };
     }, []);
 

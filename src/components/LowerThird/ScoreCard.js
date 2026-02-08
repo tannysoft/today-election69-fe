@@ -106,7 +106,7 @@ export default function ScoreCard({ rank, name, title, firstName, lastName, part
                         alt={name}
                         className={styles.portraitImage}
                         style={{
-                            objectPosition: imageCentered ? 'center center' : 'center 10px',
+                            objectPosition: imageCentered ? 'center center' : 'center center',
                         }}
                     />
                 ) : (
