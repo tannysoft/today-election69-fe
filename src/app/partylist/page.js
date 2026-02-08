@@ -3,7 +3,7 @@
 import { useState, useEffect, useMemo } from 'react';
 import { getPartylistResult, getNationalPartylistTotal } from '@/services/electionService';
 import { getSettings } from '@/services/settingsService';
-import pb from '@/lib/pocketbase';
+// import pb from '@/lib/pocketbase'; // Removed
 import ScoreCard from '@/components/LowerThird/ScoreCard';
 import CountUp from 'react-countup';
 import styles from './page.module.css';
@@ -50,46 +50,16 @@ export default function PartyListPage() {
     };
 
     useEffect(() => {
-        fetchData();
-        fetchSettings();
+        const loadAll = () => {
+            fetchData();
+            fetchSettings();
+        };
 
-        // Subscriptions
-        pb.collection('partylistResult').subscribe('*', () => fetchData());
-
-        // Subscribe to nationalPartylist for header stats
-        const subNational = pb.collection('nationalPartylist').subscribe('*', async () => {
-            const data = await getNationalPartylistTotal();
-            setCountedData({
-                totalVotes: data.totalVotes,
-                percent: data.percent
-            });
-        });
-
-        const sub = pb.collection('settings').subscribe('*', (e) => {
-            if (e.action === 'update' || e.action === 'create') {
-                const s = e.record;
-                setHideZeroScore(s.hide_zero_score);
-
-                const newMode = s.partylist_mode || 'auto';
-                const newIndex = Number(s.partylist_index) || 0;
-                const newCountMode = s.count_display_mode || 'votes';
-
-                setViewMode(newMode);
-                setManualIndex(newIndex);
-                setCountDisplayMode(newCountMode);
-
-                if (newMode === 'manual') {
-                    setCurrentIndex(newIndex);
-                }
-            }
-        });
+        loadAll();
+        const interval = setInterval(loadAll, 30000); // 30 seconds polling
 
         return () => {
-            sub.then(unsubscribe => unsubscribe && unsubscribe());
-            subNational.then(unsubscribe => unsubscribe && unsubscribe());
-            pb.collection('partylistResult').unsubscribe('*');
-            pb.collection('nationalPartylist').unsubscribe('*');
-            pb.collection('settings').unsubscribe('*');
+            clearInterval(interval);
         };
     }, []);
 
