@@ -147,7 +147,7 @@ export default function PartiesSeatsPage() {
             });
         });
 
-        const interval = setInterval(fetchData, 10000);
+        const interval = setInterval(fetchData, 30000);
         return () => {
             clearInterval(interval);
             subSettings.then(unsubscribe => unsubscribe && unsubscribe());

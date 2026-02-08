@@ -242,7 +242,7 @@ export default function PartiesPage() {
         });
 
         // Polling
-        const interval = setInterval(fetchAllData, 10000);
+        const interval = setInterval(fetchAllData, 30000);
 
         return () => {
             clearInterval(interval);

@@ -37,6 +37,7 @@ export async function getElectionData(limit = 3) {
         const candidates = await pb.collection('candidates').getFullList({
             sort: '-totalVotes', // High score first
             expand: 'party',
+            filter: 'active = true', // Filter only active candidates
         });
 
         // 3. Map candidates to areas
@@ -59,7 +60,9 @@ export async function getElectionData(limit = 3) {
                     image: c.photoUrl || (c.image ? pb.files.getUrl(c, c.image) : null),
                     candidateNumber: c.number,
                     areaNumber: area.number,
-                    provinceId: area.expand?.province?.code || area.expand?.province?.id // Prefer code, fallback to id
+                    provinceId: area.expand?.province?.code || area.expand?.province?.id, // Prefer code, fallback to id
+                    photoApprove: c.photoApprove,
+                    photoUrlWebsite: c.photoUrlWebsite
                 }));
 
             return {
@@ -134,7 +137,7 @@ export async function getCandidatesForArea(areaId, limit = 3) {
         });
 
         const candidates = await pb.collection('candidates').getFullList({
-            filter: `area = "${areaId}"`,
+            filter: `area = "${areaId}" && active = true`,
             sort: '-totalVotes',
             expand: 'party',
         });
@@ -155,7 +158,9 @@ export async function getCandidatesForArea(areaId, limit = 3) {
                 image: c.photoUrl || (c.image ? pb.files.getUrl(c, c.image) : null),
                 candidateNumber: c.number,
                 areaNumber: area.number,
-                provinceId: area.expand?.province?.code || area.expand?.province?.id
+                provinceId: area.expand?.province?.code || area.expand?.province?.id,
+                photoApprove: c.photoApprove,
+                photoUrlWebsite: c.photoUrlWebsite
             }));
 
     } catch (error) {

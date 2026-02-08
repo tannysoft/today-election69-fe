@@ -3,7 +3,7 @@ import { useState, useEffect, useRef } from 'react';
 import CountUp from 'react-countup';
 import styles from './LowerThird.module.css';
 
-export default function ScoreCard({ rank, name, title, firstName, lastName, party, partyLogoUrl, score, color, image, rankPosition = 'top', provinceId, areaNumber, candidateNumber, hidePartyLabel = false, imageCentered = false, nameFontSize = null }) {
+export default function ScoreCard({ rank, name, title, firstName, lastName, party, partyLogoUrl, score, color, image, rankPosition = 'top', provinceId, areaNumber, candidateNumber, hidePartyLabel = false, imageCentered = false, nameFontSize = null, photoApprove, photoUrlWebsite }) {
     const [bgUrl, setBgUrl] = useState(null);
     const nameRef = useRef(null);
     const nameContainerRef = useRef(null);
@@ -42,9 +42,19 @@ export default function ScoreCard({ rank, name, title, firstName, lastName, part
     const [finalImageUrl, setFinalImageUrl] = useState(null);
 
     useEffect(() => {
-        const url = (provinceId && areaNumber && candidateNumber && image)
-            ? `https://files-election69.livetubex.com/candidates/${provinceId}/${areaNumber}/${candidateNumber}.png`
-            : (image ? image : (partyLogoUrl ? partyLogoUrl : null));
+        let url = null;
+
+        if (provinceId && areaNumber && candidateNumber) {
+            if (photoApprove === true && photoUrlWebsite) {
+                url = `https://files-election69.livetubex.com/candidates/avatar/${provinceId}/${areaNumber}/${candidateNumber}.png`;
+            } else {
+                url = `https://files-election69.livetubex.com/candidates/${provinceId}/${areaNumber}/${candidateNumber}.png`;
+            }
+        } else if (image) {
+            url = image;
+        } else if (partyLogoUrl) {
+            url = partyLogoUrl;
+        }
 
         if (url) {
             const img = new Image();
@@ -54,7 +64,7 @@ export default function ScoreCard({ rank, name, title, firstName, lastName, part
         } else {
             setFinalImageUrl(null);
         }
-    }, [provinceId, areaNumber, candidateNumber, image, partyLogoUrl]);
+    }, [provinceId, areaNumber, candidateNumber, image, partyLogoUrl, photoApprove, photoUrlWebsite]);
 
     // Handle Background Fallback
     useEffect(() => {
