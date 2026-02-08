@@ -2,9 +2,9 @@
 
 import { useState, useEffect, useMemo } from 'react';
 import LowerThird from '@/components/LowerThird/LowerThird';
-import { getElectionData, getCandidatesForArea } from '@/services/electionService';
+import { getElectionData } from '@/services/electionService';
 import { getSettings } from '@/services/settingsService';
-import pb from '@/lib/pocketbase';
+// import pb from '@/lib/pocketbase'; // Removed
 import styles from './page.module.css';
 
 export default function AreaPage() {
@@ -21,6 +21,7 @@ export default function AreaPage() {
 
     useEffect(() => {
         // Fetch data on mount
+        // Fetch data on mount and interval
         async function fetchData() {
             const data = await getElectionData();
             if (data && data.length > 0) {
@@ -42,48 +43,12 @@ export default function AreaPage() {
                 console.warn("Could not fetch settings:", err);
             }
         }
+
         fetchData();
-
-        // Realtime Subscription: Candidates
-        pb.collection('candidates').subscribe('*', async function (e) {
-            if (e.action === 'update') {
-                // ... (existing logic)
-                const updatedCandidates = await getCandidatesForArea(e.record.area);
-
-                setAllAreas(prevAreas => {
-                    return prevAreas.map(area => {
-                        if (area.id !== e.record.area) return area;
-                        // Replace candidates with the fresh sorted list from DB
-                        return { ...area, candidates: updatedCandidates };
-                    });
-                });
-            }
-        });
-
-        // Realtime Subscription: Settings (Filter)
-        try {
-            pb.collection('settings').subscribe('*', function (e) {
-                console.log("Settings Update:", e.action, e.record);
-                if (e.action === 'update' || e.action === 'create') {
-                    setFilterProvince(e.record.filter_province || "");
-                    setFilterDistrict(e.record.filter_district || "");
-                    setHideZeroScore(e.record.hide_zero_score || false);
-                    // setRemoveBackground(e.record.remove_background || false); // Removed
-
-                    // Reset index on filter change to allow smooth transition to new set
-                    setCurrentIndex(0);
-                    setIsVisible(true);
-                }
-            }).catch(err => {
-                console.warn("Subscription to settings failed:", err);
-            });
-        } catch (err) {
-            console.warn("Subscription setup error:", err);
-        }
+        const interval = setInterval(fetchData, 30000); // 30 seconds
 
         return () => {
-            pb.collection('candidates').unsubscribe('*');
-            pb.collection('settings').unsubscribe('*');
+            clearInterval(interval);
         };
     }, []);
 
