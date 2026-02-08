@@ -20,35 +20,40 @@ export default function AreaPage() {
     // const [removeBackground, setRemoveBackground] = useState(false); // Removed
 
     useEffect(() => {
-        // Fetch data on mount
         // Fetch data on mount and interval
-        async function fetchData() {
+        async function fetchElectionData() {
             const data = await getElectionData();
             if (data && data.length > 0) {
                 setAllAreas(data);
             } else {
                 console.warn("No data fetched");
             }
+        }
 
-            // Fetch initial settings via Server Action
+        async function fetchSettingsData() {
             try {
                 const s = await getSettings();
                 if (s) {
                     setFilterProvince(s.filter_province || "");
                     setFilterDistrict(s.filter_district || "");
                     setHideZeroScore(s.hide_zero_score || false);
-                    // setRemoveBackground(s.remove_background || false); // Removed
                 }
             } catch (err) {
                 console.warn("Could not fetch settings:", err);
             }
         }
 
-        fetchData();
-        const interval = setInterval(fetchData, 30000); // 30 seconds
+        // Initial Fetch
+        fetchElectionData();
+        fetchSettingsData();
+
+        // Intervals
+        const dataInterval = setInterval(fetchElectionData, 30000); // 30 seconds for data
+        const settingsInterval = setInterval(fetchSettingsData, 3000); // 3 seconds for settings
 
         return () => {
-            clearInterval(interval);
+            clearInterval(dataInterval);
+            clearInterval(settingsInterval);
         };
     }, []);
 
