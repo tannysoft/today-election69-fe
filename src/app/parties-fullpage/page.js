@@ -119,7 +119,7 @@ export default function PartiesFullPage() {
     useEffect(() => {
         fetchData();
         // Polling if needed
-        const interval = setInterval(fetchData, 30000);
+        const interval = setInterval(fetchData, 60000);
         return () => clearInterval(interval);
     }, []);
 
