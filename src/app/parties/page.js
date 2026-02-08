@@ -3,7 +3,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { getPartyListData, getTotalVotes, getNationalPartylistTotal, getNationalTotal } from '@/services/electionService';
 import { getSettings } from '@/services/settingsService';
-import pb from '@/lib/pocketbase';
+// import pb from '@/lib/pocketbase'; // Removed
 import CountUp from 'react-countup';
 import styles from './page.module.css';
 
@@ -185,73 +185,30 @@ export default function PartiesPage() {
     };
 
     useEffect(() => {
-        fetchAllData();
+        const loadAll = () => {
+            fetchAllData();
 
-        // Fetch initial settings
-        getSettings().then(settings => {
-            if (settings) {
-                const mode = settings.party_page_mode || 'auto';
-                const idx = Number(settings.party_page_index) || 0;
-                const cMode = settings.count_display_mode || 'votes';
+            // Fetch settings
+            getSettings().then(settings => {
+                if (settings) {
+                    const mode = settings.party_page_mode || 'auto';
+                    const idx = Number(settings.party_page_index) || 0;
+                    const cMode = settings.count_display_mode || 'votes';
 
-                setViewMode(mode);
-                setManualIndex(idx);
-                setCountDisplayMode(cMode);
+                    setViewMode(mode);
+                    setManualIndex(idx);
+                    setCountDisplayMode(cMode);
 
-                if (mode === 'manual') setCurrentIndex(idx);
-            }
-        });
-
-        // Realtime Settings Subscription
-        const subSettings = pb.collection('settings').subscribe('*', (e) => {
-            if (e.action === 'update' || e.action === 'create') {
-                const s = e.record;
-                const newMode = s.party_page_mode || 'auto';
-                const newIndex = Number(s.party_page_index) || 0;
-                const newCountMode = s.count_display_mode || 'votes';
-
-                setViewMode(newMode);
-                setManualIndex(newIndex);
-                setCountDisplayMode(newCountMode);
-
-                // Immediate update for manual mode to skip effect delay
-                if (newMode === 'manual') {
-                    setCurrentIndex(newIndex);
+                    if (mode === 'manual') setCurrentIndex(idx);
                 }
-            }
-        });
+            });
+        };
 
-        // Realtime nationalPartylist Subscription
-        const subNationalPartylist = pb.collection('nationalPartylist').subscribe('*', async () => {
-            const data = await getNationalPartylistTotal();
-            setTotalVotes(prev => ({
-                ...prev,
-                partyListTotal: data.totalVotes,
-                partyListPercent: data.percent
-            }));
-        });
-
-        // Realtime national (Constituency) Subscription
-        const subNational = pb.collection('national').subscribe('*', async () => {
-            const data = await getNationalTotal();
-            setTotalVotes(prev => ({
-                ...prev,
-                constituencyTotal: data.totalVotes,
-                constituencyPercent: data.percent
-            }));
-        });
-
-        // Polling
-        const interval = setInterval(fetchAllData, 60000);
+        loadAll();
+        const interval = setInterval(loadAll, 30000); // 30 seconds polling
 
         return () => {
             clearInterval(interval);
-            subSettings.then(unsubscribe => unsubscribe && unsubscribe());
-            subNationalPartylist.then(unsubscribe => unsubscribe && unsubscribe());
-            subNational.then(unsubscribe => unsubscribe && unsubscribe());
-            pb.collection('settings').unsubscribe('*');
-            pb.collection('nationalPartylist').unsubscribe('*');
-            pb.collection('national').unsubscribe('*');
         };
     }, []);
 
