@@ -4,7 +4,7 @@ import { useState, useEffect, useMemo } from 'react';
 import ScoreCard from '@/components/LowerThird/ScoreCard';
 import { getElectionData } from '@/services/electionService';
 import { getSettings } from '@/services/settingsService';
-import pb from '@/lib/pocketbase';
+// import pb from '@/lib/pocketbase'; // Removed
 import { BANGKOK_ZONES } from '@/data/bangkokZones';
 import styles from './page.module.css';
 
@@ -20,66 +20,28 @@ export default function AreaFullPage() {
 
     useEffect(() => {
         // Fetch data on mount (limit 7)
+        // Fetch data on mount and interval
         async function fetchData() {
-            const data = await getElectionData(5);
+            const data = await getElectionData(5); // Keep limit 5 from original
             if (data && data.length > 0) {
                 setAllAreas(data);
             }
+
+            // Fetch settings
+            getSettings().then(s => {
+                if (s) {
+                    setFilterProvince(s.filter_province || "");
+                    setFilterDistrict(s.filter_district || "");
+                    setHideZeroScore(s.hide_zero_score || false);
+                }
+            });
         }
+
         fetchData();
-
-        // Realtime Updates for Candidates
-        pb.collection('candidates').subscribe('*', function (e) {
-            if (e.action === 'update') {
-                setAllAreas(prevAreas => {
-                    return prevAreas.map(area => {
-                        if (area.id !== e.record.area) return area;
-
-                        // Update Candidate Score
-                        const updatedCandidates = area.candidates.map(c => {
-                            if (c.id === e.record.id) {
-                                return { ...c, score: e.record.totalVotes };
-                            }
-                            return c;
-                        });
-
-                        // Re-sort and Re-rank
-                        updatedCandidates.sort((a, b) => b.score - a.score);
-                        const reRankedCandidates = updatedCandidates.map((c, index) => ({
-                            ...c,
-                            rank: index + 1
-                        }));
-
-                        return { ...area, candidates: reRankedCandidates };
-                    });
-                });
-            }
-        });
-
-        // Realtime Subscription: Settings (Filter)
-        pb.collection('settings').subscribe('*', function (e) {
-            if (e.action === 'update' || e.action === 'create') {
-                setFilterProvince(e.record.filter_province || "");
-                setFilterDistrict(e.record.filter_district || "");
-                setHideZeroScore(e.record.hide_zero_score || false);
-
-                setCurrentIndex(0);
-                setIsVisible(true);
-            }
-        });
-
-        // Fetch initial settings
-        getSettings().then(s => {
-            if (s) {
-                setFilterProvince(s.filter_province || "");
-                setFilterDistrict(s.filter_district || "");
-                setHideZeroScore(s.hide_zero_score || false);
-            }
-        });
+        const interval = setInterval(fetchData, 30000); // 30 seconds polling
 
         return () => {
-            pb.collection('candidates').unsubscribe('*');
-            pb.collection('settings').unsubscribe('*');
+            clearInterval(interval);
         };
     }, []);
 
