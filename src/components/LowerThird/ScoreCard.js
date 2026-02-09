@@ -48,7 +48,7 @@ export default function ScoreCard({ rank, name, title, firstName, lastName, part
             if (photoApprove === true && photoUrlWebsite) {
                 url = `https://files-election69.livetubex.com/candidates/avatar/${provinceId}/${areaNumber}/${candidateNumber}.png`;
             } else {
-                url = `https://files-election69.livetubex.com/candidates/${provinceId}/${areaNumber}/${candidateNumber}.png`;
+                url = `https://files-election69.livetubex.com/candidates/avatar/${provinceId}/${areaNumber}/${candidateNumber}.png`;
             }
         } else if (image) {
             url = image;
